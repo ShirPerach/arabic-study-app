@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2d3561">
+<title>כרטיסיות ערבית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Handjet:wght@400;600;700;800&family=Noto+Sans+Hebrew:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: #2d3561;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.2) 12%, transparent 12.5%);
+    background-size: 44px 44px;
+    direction: rtl;
+    font-family: 'Handjet', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+  .app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+    position: relative;
+  }
+
+  .coin-badge {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    background: #f4efeb;
+    border: 4px solid #f4c9d3;
+    border-radius: 8px;
+    padding: 4px 14px 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 20;
+  }
+  .coin-icon {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, #f5d442, #e8a820);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: bold;
+    border: 2px solid #c9922a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    color: #8a6a10;
+  }
+  .coin-count {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 600; font-size: 38px;
+    color: #f69cb1; line-height: 1;
+    display: inline-block;
+  }
+  .coin-pop { animation: coinPop 0.5s ease-out; }
+  @keyframes coinPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+
+  .back-link {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: white;
+    font-family: 'Handjet', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    z-index: 20;
+    padding: 4px 12px;
+    line-height: 1;
+  }
+
+  .reset-btn {
+    position: fixed;
+    top: 64px;
+    right: 16px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    color: rgba(248,234,247,0.7);
+    font-family: 'Handjet', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 6px 12px;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.2s;
+  }
+  .reset-btn:hover {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+  }
+
+  .card-outer {
+    width: 100%; max-width: 600px;
+    position: relative;
+  }
+  .card-header {
+    background: #c98191;
+    border-radius: 18px 18px 0 0;
+    padding: 10px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .header-text {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 700; font-size: 24px;
+    color: #f8eaf7;
+  }
+  .header-dot { color: white; font-size: 28px; }
+
+  .card-body {
+    border-radius: 0 0 20px 20px;
+    border: 8px solid #c98191;
+    background: #f0bcc8;
+    border-top: none;
+    padding: 48px 32px 32px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 340px;
+    position: relative;
+    transition: background-color 0.35s, border-color 0.35s;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .card-body.correct { background: #d4f0d8; border-color: #6abf7b; }
+  .card-body.wrong { background: #f0d4d4; border-color: #bf6a6a; }
+
+  .arabic-word {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+    color: #cd687f;
+    transition: color 0.3s;
+  }
+  .card-body.correct .arabic-word { color: #3a8a4a; }
+  .card-body.wrong .arabic-word { color: #8a3a3a; }
+
+  .reveal-btn {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 700; font-size: 22px;
+    color: #c98191;
+    background: none; border: none;
+    cursor: pointer; margin-top: 16px;
+    transition: opacity 0.2s;
+  }
+  .reveal-btn:hover { opacity: 0.65; }
+
+  .tr-text {
+    font-family: 'Noto Sans Hebrew', sans-serif;
+    font-weight: 600; font-size: 26px;
+    color: #8b5e6b; text-align: center;
+    margin-top: 12px;
+    opacity: 0; transform: translateY(8px);
+    animation: fadeUp 0.3s ease forwards;
+  }
+  .meaning-text {
+    font-family: 'Noto Sans Hebrew', sans-serif;
+    font-weight: 700; font-size: 30px;
+    color: #6b3a4a; text-align: center;
+    margin-top: 6px;
+    opacity: 0; transform: translateY(8px);
+    animation: fadeUp 0.3s 0.1s ease forwards;
+  }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .buttons-row {
+    display: flex; gap: 14px;
+    margin-top: 20px; justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800; font-size: 36px;
+    border: 5px solid; border-radius: 10px;
+    padding: 6px 24px; cursor: pointer;
+    transition: all 0.15s; line-height: 1;
+    min-width: 120px; text-align: center;
+    background: none;
+  }
+  .btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.08); }
+  .btn:active:not(:disabled) { transform: translateY(0); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-correct { background: #a6c5d9; border-color: #5e7c8a; color: #5e7c8a; }
+  .btn-wrong { background: #a6c5d9; border-color: #5e7c8a; color: #5e7c8a; }
+  .btn-meaning {
+    background: linear-gradient(180deg, #7ba3b8, #5e8ca3);
+    border-color: #5e7c8a; color: #c8dde8;
+    box-shadow: 0 4px 0 #4a6878;
+  }
+  .btn-meaning:hover:not(:disabled) { box-shadow: 0 2px 0 #4a6878; transform: translateY(2px) !important; }
+
+  .btn-restart {
+    background: #f0bcc8; border-color: #c98191;
+    color: #c98191; font-size: 30px; margin-top: 14px;
+  }
+
+  .btn-shuffle {
+    background: #f4efeb;
+    border-color: #5e7c8a;
+    color: #5e7c8a;
+    font-size: 24px;
+    min-width: auto;
+    padding: 6px 20px;
+  }
+
+  .shuffle-row {
+    display: flex; justify-content: center; margin-top: 16px;
+  }
+
+  .feedback-icon {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 90px;
+    animation: popBounce 0.5s ease forwards;
+    z-index: 10; pointer-events: none;
+  }
+  @keyframes popBounce {
+    0% { transform: translate(-50%, -50%) scale(0) rotate(-15deg); }
+    50% { transform: translate(-50%, -50%) scale(1.25) rotate(5deg); }
+    100% { transform: translate(-50%, -50%) scale(1) rotate(0); }
+  }
+
+  .swipe-hint {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800; font-size: 28px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.15s;
+  }
+  .swipe-hint-right { right: -60px; color: #6abf7b; }
+  .swipe-hint-left { left: -60px; color: #bf6a6a; }
+
+  @keyframes swipeRight {
+    0% { transform: translateX(0) rotate(0); opacity: 1; }
+    100% { transform: translateX(120px) rotate(8deg); opacity: 0; }
+  }
+  @keyframes swipeLeft {
+    0% { transform: translateX(0) rotate(0); opacity: 1; }
+    100% { transform: translateX(-120px) rotate(-8deg); opacity: 0; }
+  }
+  .card-outer.swipe-right { animation: swipeRight 0.3s ease forwards; }
+  .card-outer.swipe-left { animation: swipeLeft 0.3s ease forwards; }
+  .card-outer.dragging { transition: none; }
+  .card-outer:not(.dragging) { transition: transform 0.3s ease; }
+
+  .finished-box { text-align: center; padding: 40px 20px; }
+  .finished-emoji { font-size: 72px; margin-bottom: 12px; }
+  .finished-title {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800; font-size: 52px;
+    color: #f8eaf7;
+  }
+  .finished-stat {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 700; font-size: 28px;
+    color: #f0bcc8; margin-top: 4px;
+  }
+  .best-score {
+    color: #f5d442;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 400px) {
+    .btn { font-size: 28px; padding: 6px 16px; min-width: 90px; }
+    .header-text { font-size: 20px; }
+    .swipe-hint-right { right: -20px; }
+    .swipe-hint-left { left: -20px; }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+const VOCAB = [
+  {"arabic":"دَار","tr":"דַאר","heb":"דירה, בית"},
+  {"arabic":"أَرْنَب","tr":"אַרְנַב","heb":"ארנב"},
+  {"arabic":"أَنْتَ","tr":"אַנְתַ","heb":"אתה"},
+  {"arabic":"زَارَ","tr":"זַארַ","heb":"ביקר...ב"},
+  {"arabic":"أُذُن","tr":"אֻדֻן","heb":"אוזן"},
+  {"arabic":"أَنْتِ","tr":"אַנְתִ","heb":"את"},
+  {"arabic":"وَ","tr":"וַ","heb":"ו (ו' החיבור)"},
+  {"arabic":"نُور","tr":"נוּר","heb":"אור / נור"},
+  {"arabic":"بِنْت","tr":"בִּנְת","heb":"בת, ילדה"},
+  {"arabic":"وَرْد","tr":"וַרְד","heb":"ורדים"},
+  {"arabic":"أَنَا","tr":"אַנַא","heb":"אני"},
+  {"arabic":"بَنَات","tr":"בַּנַאת","heb":"בנות, ילדות"},
+  {"arabic":"دَاوُد","tr":"דַאוּד","heb":"דאוד (שם פרטי)"},
+  {"arabic":"إِبْن","tr":"אִבְּן","heb":"בן"},
+  {"arabic":"بَيْت","tr":"בֵּית","heb":"בית"},
+  {"arabic":"دُودُو","tr":"דוּדוּ","heb":"דודו (שם פרטי)"},
+  {"arabic":"بُيُوت","tr":"בֻּיוּת","heb":"בתים"},
+  {"arabic":"رَاز","tr":"רַאז","heb":"ראז (שם פרטי)"},
+  {"arabic":"يَد","tr":"יַד","heb":"יד"},
+  {"arabic":"وِدَاد","tr":"וִדַאד","heb":"ודאד (שם פרטי)"},
+  {"arabic":"إِيرَان","tr":"אִירַאן","heb":"איראן"},
+  {"arabic":"زَارَتْ","tr":"זַארַת","heb":"ביקרה...ב"},
+  {"arabic":"نُورِي","tr":"נוּרִי","heb":"נורי (שם פרטי)"},
+  {"arabic":"دَارِي","tr":"דַארִי","heb":"דירתי, ביתי"},
+  {"arabic":"زِيَاد","tr":"זִיַאד","heb":"זיאד (שם פרטי)"},
+  {"arabic":"بَيْتِي","tr":"בֵּיתִי","heb":"ביתי (בית שלי)"},
+  {"arabic":"أ","tr":"אַ","heb":"האם?"},
+  {"arabic":"أَيْن","tr":"אַיְן","heb":"איפה? היכן?"},
+  {"arabic":"بِنْتِي","tr":"בִּנְתִי","heb":"בתי (בת שלי)"},
+  {"arabic":"أَوْ","tr":"אַו","heb":"או"},
+  {"arabic":"وَزِير","tr":"וַזִיר","heb":"שר (בממשלה)"},
+  {"arabic":"إِبْنِي","tr":"אִבְּנִי","heb":"בני (בן שלי)"},
+  {"arabic":"دُرُوز","tr":"דֻרוּז","heb":"דרוזים"},
+  {"arabic":"دُرْزِيّ","tr":"דֻרְזִי","heb":"דרוזי"},
+  {"arabic":"يَدِي","tr":"יַדִי","heb":"ידי (יד שלי)"},
+  {"arabic":"دُبّ","tr":"דֻבּ","heb":"דב"},
+  {"arabic":"بَدَوِيّ","tr":"בַּדַוִי","heb":"בדואי"},
+  {"arabic":"ثَوْر","tr":"ת׳וּר","heb":"שור"},
+  {"arabic":"أَب","tr":"אַבּ","heb":"אב, אבא"},
+  {"arabic":"بَيْرُوت","tr":"בֵּירוּת","heb":"ביירות"},
+  {"arabic":"ثَوْب","tr":"ת׳וּב","heb":"בגד"},
+  {"arabic":"بِ","tr":"בִּ","heb":"ב... באמצעות"},
+  {"arabic":"تُوت","tr":"תוּת","heb":"תותים"},
+  {"arabic":"ثِيَاب","tr":"ת׳ִיַאב","heb":"בגדים"},
+  {"arabic":"بَاب","tr":"בַּאב","heb":"דלת, שער"},
+  {"arabic":"زَيْتُون","tr":"זֵיתוּן","heb":"זיתים"},
+  {"arabic":"أَثَاث","tr":"אַת׳את׳","heb":"ריהוט, רהיטים"},
+  {"arabic":"بِدَار","tr":"בִּדַאר","heb":"בדירה, בבית"},
+  {"arabic":"هُوَ","tr":"הֻוַ","heb":"הוא"},
+  {"arabic":"بَدَوِيَّة","tr":"בַּדַוִיַּה","heb":"בדואית"},
+  {"arabic":"أُمَّهَات","tr":"אֻמַּהַאת","heb":"אמהות"},
+  {"arabic":"هِيَ","tr":"הִיַ","heb":"היא"},
+  {"arabic":"يَهُودِيَّة","tr":"יַהוּדִיַּה","heb":"יהודיה"},
+  {"arabic":"نَمِر","tr":"נַמִר","heb":"נמר"},
+  {"arabic":"يَهُودِيّ","tr":"יַהוּדִי","heb":"יהודי"},
+  {"arabic":"أُمّ","tr":"אֻם","heb":"אם, אמא"},
+  {"arabic":"وَلَد","tr":"וַלַד","heb":"ילד"},
+  {"arabic":"يَهُود","tr":"יַהוּד","heb":"יהודים"},
+  {"arabic":"مُدِير","tr":"מֻדִיר","heb":"מנהל"},
+  {"arabic":"أَوْلَاد","tr":"אַוְלַאד","heb":"ילדים"},
+  {"arabic":"هُنَا","tr":"הֻנַא","heb":"כאן, פה"},
+  {"arabic":"مُمْتَاز","tr":"מֻמְתַאז","heb":"מצוין"},
+  {"arabic":"تِلْمِيذ","tr":"תִלְמִיד׳","heb":"תלמיד"},
+  {"arabic":"ذَهَب","tr":"ד׳ַהַב","heb":"הלך"},
+  {"arabic":"مَدِينَة","tr":"מַדִינַה","heb":"עיר"},
+  {"arabic":"تَلَامِيذ","tr":"תַלַאמִיד׳","heb":"תלמידים"},
+  {"arabic":"هَذَا","tr":"הַד׳ַא","heb":"זה, הזה"},
+  {"arabic":"تَمْرِين","tr":"תַמְרִין","heb":"תרגיל"},
+  {"arabic":"أَهْل","tr":"אַהְל","heb":"משפחה, אנשי..."},
+  {"arabic":"هَذِهِ","tr":"הַד׳ִהִ","heb":"זאת, הזאת"},
+  {"arabic":"إِبْرَاهِيم","tr":"אִבְּרַאהִים","heb":"אברהים (שם פרטי)"},
+  {"arabic":"لَا","tr":"לַא","heb":"לא (מילת שלילה)"},
+  {"arabic":"دَارُهُ","tr":"דַארֻהוּ","heb":"דירתו, ביתו"},
+  {"arabic":"مُنِير","tr":"מֻנִיר","heb":"מניר (שם פרטי)"},
+  {"arabic":"لِ","tr":"לִ","heb":"ל..."},
+  {"arabic":"دَارُهَا","tr":"דַארֻהַא","heb":"דירתה, ביתה"},
+  {"arabic":"أَنْتُم","tr":"אַנְתֻם","heb":"אתם"},
+  {"arabic":"لُبْنَان","tr":"לֻבְנַאן","heb":"לבנון"},
+  {"arabic":"بَيْتُهُ","tr":"בֵּיתֻהוּ","heb":"ביתו"},
+  {"arabic":"أَنْتُنَّ","tr":"אַנְתֻנַּ","heb":"אתן"},
+  {"arabic":"لَنْدَن","tr":"לַנְדַן","heb":"לונדון"},
+  {"arabic":"بَيْتَهَا","tr":"בֵּיתַהַא","heb":"ביתה"},
+  {"arabic":"هُمْ","tr":"הֻם","heb":"הם"},
+  {"arabic":"إِيلَات","tr":"אִילַאת","heb":"אילת"},
+  {"arabic":"هُنَّ","tr":"הֻנַּ","heb":"הן"},
+  {"arabic":"تَلْ أَبِيب","tr":"תַל אַבִּיב","heb":"תל אביב"},
+  {"arabic":"مِنْ","tr":"מִן","heb":"מ... מן"},
+  {"arabic":"نَمْلَة","tr":"נַמְלַה","heb":"נמלה"},
+  {"arabic":"وَزِيرَة","tr":"וַזִירַה","heb":"שרה (בממשלה)"},
+  {"arabic":"مِنْ أَيْن","tr":"מִן אַיְן","heb":"מאיפה?"},
+  {"arabic":"ثَلَاث","tr":"ת׳ַלַאת׳","heb":"שלוש"},
+  {"arabic":"دُرْزِيَّة","tr":"דֻרְזִיַּה","heb":"דרוזית"},
+  {"arabic":"مَنْ","tr":"מַן","heb":"מי?"},
+  {"arabic":"أَمَل","tr":"אַמַל","heb":"אמל (שם פרטי) / תקווה"},
+  {"arabic":"تِلْمِيذَة","tr":"תִלְמִיד׳ַה","heb":"תלמידה"},
+  {"arabic":"كَلْب","tr":"כַּלְבּ","heb":"כלב"},
+  {"arabic":"دَارُكِ","tr":"דַארֻכִ","heb":"דירתך (לנקבה)"},
+  {"arabic":"لِي","tr":"לִי","heb":"יש לי"},
+  {"arabic":"أَبُو كَادُو","tr":"אַבּוּ כַּאדוּ","heb":"אבוקדו"},
+  {"arabic":"كَلْبُكِ","tr":"כַּלְבֻּכִ","heb":"כלבך (לנקבה)"},
+  {"arabic":"إِلَى","tr":"אִלַא","heb":"אל... ל..."},
+  {"arabic":"كَلِمَات","tr":"כַּלִמַאת","heb":"מילים"},
+  {"arabic":"يَدُكِ","tr":"יַדֻכִ","heb":"ידך (לנקבה)"},
+  {"arabic":"إِلَى أَيْن","tr":"אִלַא אַיְן","heb":"לאן?"},
+  {"arabic":"كَلِمَة","tr":"כַּלִמַה","heb":"מילה"},
+  {"arabic":"كِتَابُكِ","tr":"כִּתַאבֻּכִ","heb":"ספרך (לנקבה)"},
+  {"arabic":"هَلْ","tr":"הַל","heb":"האם?"},
+  {"arabic":"كِيوِي","tr":"כִּיוִי","heb":"קיווי"},
+  {"arabic":"مُدِيرُكِ","tr":"מֻדִירֻכִ","heb":"מנהלך (לנקבה)"},
+  {"arabic":"اَلْوَلَد","tr":"אַלְוַלַד","heb":"הילד"},
+  {"arabic":"أَمْرِيكَا","tr":"אַמְרִיכַּא","heb":"אמריקה"},
+  {"arabic":"يَوْم","tr":"יַוְם","heb":"יום"},
+  {"arabic":"اَلْوَزِير","tr":"אַלְוַזִיר","heb":"השר"},
+  {"arabic":"تُرْكِيَا","tr":"תֻרְכִּיַא","heb":"תורכיה"},
+  {"arabic":"أَيَّام","tr":"אַיַּאם","heb":"ימים"},
+  {"arabic":"اَلْيَد","tr":"אַלְיַד","heb":"היד"},
+  {"arabic":"كَنَدَا","tr":"כַּנַדַא","heb":"קנדה"},
+  {"arabic":"مَلِك","tr":"מַלִכּ","heb":"מלך"},
+  {"arabic":"اَلْيَهُودِيّ","tr":"אַלְיַהוּדִי","heb":"היהודי"},
+  {"arabic":"نِيُو يُورْك","tr":"נִיוּ יוּרְכּ","heb":"ניו יורק"},
+  {"arabic":"مَمْلَكَة","tr":"מַמְלַכַּה","heb":"ממלכה"},
+  {"arabic":"كِتَاب","tr":"כִּתַאב","heb":"ספר"},
+  {"arabic":"اَلْكُوَيْت","tr":"אַלְכֻּוֵית","heb":"כוויט"},
+  {"arabic":"اَلْأُرْدُنّ","tr":"אַלְאֻרְדֻנּ","heb":"ירדן"},
+  {"arabic":"كُتُب","tr":"כֻּתֻב","heb":"ספרים"},
+  {"arabic":"بَنْك","tr":"בַּנְכּ","heb":"בנק"},
+  {"arabic":"فِي","tr":"פִי","heb":"ב..., בתוך"},
+  {"arabic":"أَكَلَ","tr":"אַכַּלַ","heb":"אכל"},
+  {"arabic":"دَارُكَ","tr":"דַארֻכַּ","heb":"דירתך (לזכר)"},
+  {"arabic":"دَفْتَر","tr":"דַפְתַר","heb":"מחברת"},
+  {"arabic":"كَتَبَ","tr":"כַּתַבַּ","heb":"כתב"},
+  {"arabic":"كَلْبُكَ","tr":"כַּלְבֻּכַּ","heb":"כלבך (לזכר)"},
+  {"arabic":"فِيل","tr":"פִיל","heb":"פיל"},
+  {"arabic":"دُكَّان","tr":"דֻכַּאן","heb":"חנות, דוכן"},
+  {"arabic":"يَدُكَ","tr":"יַדֻכַּ","heb":"ידך (לזכר)"},
+  {"arabic":"زُرَافَة","tr":"זֻרַאפַה","heb":"ג'ירפה"},
+  {"arabic":"كَبِير","tr":"כַּבִּיר","heb":"גדול"},
+  {"arabic":"كِتَابُكَ","tr":"כִּתַאבֻּכַּ","heb":"ספרך (לזכר)"},
+  {"arabic":"فُلْفُل","tr":"פֻלְפֻל","heb":"פילפל"},
+  {"arabic":"هُنَاكَ","tr":"הֻנַאכַּ","heb":"שם (ההפך מכאן)"},
+  {"arabic":"مُدِيرُكَ","tr":"מֻדִירֻכַּ","heb":"מנהלך (לזכר)"},
+  {"arabic":"فُول","tr":"פוּל","heb":"פול"},
+  {"arabic":"فَلَافِل","tr":"פַלַאפִל","heb":"פלאפל"},
+  {"arabic":"لَبِسَ","tr":"לַבִּסַ","heb":"לבש"},
+  {"arabic":"شَرِبَ","tr":"שַׁרִבַּ","heb":"שתה"},
+  {"arabic":"رَفِيق","tr":"רַפִיק","heb":"חבר"},
+  {"arabic":"مُسْلِم","tr":"מֻסְלִם","heb":"מוסלמי"},
+  {"arabic":"مِشْمِش","tr":"מִשְׁמִשׁ","heb":"משמשים"},
+  {"arabic":"يَافَا","tr":"יַאפַא","heb":"יפו"},
+  {"arabic":"رَأْس","tr":"רַאס","heb":"ראש"},
+  {"arabic":"أَشْدُود","tr":"אַשְׁדוּד","heb":"אשדוד"},
+  {"arabic":"قَرِيب","tr":"קַרִיבּ","heb":"קרוב"},
+  {"arabic":"أَمْسِ","tr":"אַמְסִ","heb":"אתמול, אמש"},
+  {"arabic":"أُورُشْلِيم الْقُدْس","tr":"אוּרוּשְׁלִים אַלְקֻדְס","heb":"ירושלים"},
+  {"arabic":"قَرْيَة","tr":"קַרְיַה","heb":"כפר"},
+  {"arabic":"سَلَام","tr":"סַלַאם","heb":"שלום"},
+  {"arabic":"عَرَبِيّ","tr":"עַרַבִּי","heb":"ערבי"},
+  {"arabic":"قَرَأَ","tr":"קַרַאַ","heb":"קרא"},
+  {"arabic":"سِنّ","tr":"סִנּ","heb":"שן"},
+  {"arabic":"عَرَبِيَّة","tr":"עַרַבִּיַּה","heb":"ערביה"},
+  {"arabic":"قَالَ","tr":"קַאלַ","heb":"אמר"},
+  {"arabic":"أَسْنَان","tr":"אַסְנַאן","heb":"שיניים"},
+  {"arabic":"عَرَب","tr":"עַרַב","heb":"ערבים"},
+  {"arabic":"قَدِيم","tr":"קַדִים","heb":"קדום, עתיק"},
+  {"arabic":"سَنَة","tr":"סַנַה","heb":"שנה"},
+  {"arabic":"مُعَلِّم","tr":"מֻעַלִּם","heb":"מורה"},
+  {"arabic":"قَهْوَة","tr":"קַהְוַה","heb":"קפה"},
+  {"arabic":"إِسْرَائِيل","tr":"אִסְרַאאִיל","heb":"ישראל"},
+  {"arabic":"نَعَم","tr":"נַעַם","heb":"כן (מילת חיוב)"},
+  {"arabic":"قَبْلَ","tr":"קַבְּלַ","heb":"לפני"},
+  {"arabic":"رَئِيس","tr":"רַאִיס","heb":"ראש, נשיא"},
+  {"arabic":"عَمِلَ","tr":"עַמִלַ","heb":"עבד, עשה"},
+  {"arabic":"إِسْم","tr":"אִסְם","heb":"שם"},
+  {"arabic":"سَفِينَة","tr":"סַפִינַה","heb":"ספינה"},
+  {"arabic":"سَمِعَ","tr":"סַמִעַ","heb":"שמע"},
+  {"arabic":"مَدْرَسَة","tr":"מַדְרַסַה","heb":"בית ספר"},
+  {"arabic":"سُوق","tr":"סוּק","heb":"שוק"},
+  {"arabic":"عِنْزَة","tr":"עִנְזַה","heb":"עז"},
+  {"arabic":"دَرَسَ","tr":"דַרַסַ","heb":"למד"},
+  {"arabic":"مِسْكِين","tr":"מִסְכִּין","heb":"מסכן"},
+  {"arabic":"عَلِي","tr":"עַלִי","heb":"עלי (שם פרטי)"},
+  {"arabic":"سَاكِن","tr":"סַאכִּן","heb":"גר (בהווה)"},
+  {"arabic":"إِسْمِي","tr":"אִסְמִי","heb":"שמי (השם שלי)"},
+  {"arabic":"عُثْمَان","tr":"עֻת׳מַאן","heb":"עת'מאן (שם פרטי)"},
+  {"arabic":"سَاكِنَة","tr":"סַאכִּנַה","heb":"גרה (בהווה)"},
+  {"arabic":"إِسْمُهُ","tr":"אִסְמֻהוּ","heb":"שמו (השם שלו)"},
+  {"arabic":"عُمَر","tr":"עֻמַר","heb":"עמר (שם פרטי)"},
+  {"arabic":"سَكَنَ","tr":"סַכַּנַ","heb":"גר (בעבר)"},
+  {"arabic":"إِسْمُهَا","tr":"אִסְמֻהַא","heb":"שמה (השם שלה)"},
+  {"arabic":"عَبَّاس","tr":"עַבַּאס","heb":"עבאס (שם פרטי)"},
+  {"arabic":"عَكَّا","tr":"עַכַּא","heb":"עכו"},
+  {"arabic":"اَلْعِرَاق","tr":"אַלְעִרַאק","heb":"עיראק"},
+  {"arabic":"عَمَّان","tr":"עַמַּאן","heb":"עמאן (בירת ירדן)"},
+  {"arabic":"مَعَ","tr":"מַעַ","heb":"עם"},
+  {"arabic":"لُغَة","tr":"לֻגַ׳ה","heb":"שפה"},
+  {"arabic":"غُرْفَة","tr":"גֻ׳רְפַה","heb":"חדר"},
+  {"arabic":"غُرَف","tr":"גֻ׳רַף","heb":"חדרים"},
+  {"arabic":"أُغْنِيَة","tr":"אֻגְ׳נִיַה","heb":"שיר"},
+  {"arabic":"غَزَّة","tr":"גַ׳זַּה","heb":"עזה"},
+  {"arabic":"بَغْدَاد","tr":"בַּגְ׳דַאד","heb":"בגדד (בירת עיראק)"},
+  {"arabic":"غُورِيلَا","tr":"גֻ׳ורִילַא","heb":"גורילה"},
+  {"arabic":"اَللُّغَة الْعَرَبِيَّة","tr":"אַלֻּגַ׳ה אַלְעַרַבִּיַּה","heb":"השפה הערבית"},
+  {"arabic":"اَللُّغَة الْعِبْرِيَّة","tr":"אַלֻּגַ׳ה אַלְעִבְרִיַּה","heb":"השפה העברית"}
+];
+
+// Shared coin key — synced with index.html (game app)
+const COINS_KEY = 'arabicApp_coins';
+const PROGRESS_KEY = 'arabicFlashcards_progress';
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const state = {
+  cards: [],
+  idx: 0,
+  coins: 0,
+  correct: 0,
+  wrong: 0,
+  showTr: false,
+  showMeaning: false,
+  feedback: null,
+  finished: false,
+  bestScore: 0,
+};
+
+function loadCoins() {
+  try {
+    state.coins = parseInt(localStorage.getItem(COINS_KEY) || '0', 10) || 0;
+  } catch {
+    state.coins = 0;
+  }
+}
+
+function saveCoins() {
+  try {
+    localStorage.setItem(COINS_KEY, String(state.coins));
+  } catch {}
+}
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    if (!raw) return false;
+    const s = JSON.parse(raw);
+    const byArabic = new Map(VOCAB.map(c => [c.arabic, c]));
+    const restored = Array.isArray(s.cardsOrder)
+      ? s.cardsOrder.map(a => byArabic.get(a)).filter(Boolean)
+      : [];
+    if (restored.length !== VOCAB.length) return false;
+    state.cards = restored;
+    state.idx = Math.min(Math.max(0, s.idx | 0), restored.length - 1);
+    state.correct = s.correct | 0;
+    state.wrong = s.wrong | 0;
+    state.bestScore = s.bestScore | 0;
+    state.finished = !!s.finished;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function saveProgress() {
+  try {
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+      cardsOrder: state.cards.map(c => c.arabic),
+      idx: state.idx,
+      correct: state.correct,
+      wrong: state.wrong,
+      bestScore: state.bestScore,
+      finished: state.finished,
+    }));
+  } catch {}
+}
+
+function resetProgress() {
+  if (!confirm('לאפס את התקדמות הכרטיסיות? (המטבעות יישמרו, שיא יישמר)')) return;
+  const best = state.bestScore;
+  state.cards = shuffle([...VOCAB]);
+  state.idx = 0;
+  state.correct = 0;
+  state.wrong = 0;
+  state.showTr = false;
+  state.showMeaning = false;
+  state.feedback = null;
+  state.finished = false;
+  state.bestScore = best;
+  saveProgress();
+  render();
+}
+
+const app = document.getElementById('app');
+
+function el(tag, props = {}, ...children) {
+  const e = document.createElement(tag);
+  for (const k in props) {
+    if (k === 'class') e.className = props[k];
+    else if (k === 'style') Object.assign(e.style, props[k]);
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2).toLowerCase(), props[k]);
+    else if (k === 'disabled') { if (props[k]) e.disabled = true; }
+    else e.setAttribute(k, props[k]);
+  }
+  for (const c of children) {
+    if (c == null || c === false) continue;
+    e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  }
+  return e;
+}
+
+let coinAnimTimer = null;
+function popCoin() {
+  const n = document.querySelector('.coin-count');
+  if (!n) return;
+  n.classList.remove('coin-pop');
+  void n.offsetWidth;
+  n.classList.add('coin-pop');
+  clearTimeout(coinAnimTimer);
+  coinAnimTimer = setTimeout(() => n.classList.remove('coin-pop'), 500);
+}
+
+let nextTimer = null;
+function scheduleNext() {
+  clearTimeout(nextTimer);
+  nextTimer = setTimeout(() => {
+    state.feedback = null;
+    state.showTr = false;
+    state.showMeaning = false;
+    if (state.idx + 1 >= state.cards.length) {
+      state.finished = true;
+      const score = Math.round((state.correct / state.cards.length) * 100);
+      if (score > state.bestScore) state.bestScore = score;
+    } else {
+      state.idx += 1;
+    }
+    saveProgress();
+    render();
+  }, 700);
+}
+
+function handleCorrect() {
+  if (state.feedback || state.finished) return;
+  state.feedback = 'correct';
+  state.correct += 1;
+  const earned = state.showTr ? 2 : 3;
+  state.coins += earned;
+  saveCoins();
+  saveProgress();
+  render();
+  popCoin();
+  scheduleNext();
+}
+
+function handleWrong() {
+  if (state.feedback || state.finished) return;
+  state.feedback = 'wrong';
+  state.wrong += 1;
+  state.showMeaning = true;
+  state.showTr = true;
+  saveProgress();
+  render();
+  scheduleNext();
+}
+
+function handleShowMeaning() {
+  if (state.feedback || state.finished) return;
+  state.showMeaning = true;
+  state.showTr = true;
+  render();
+}
+
+function handleShowTr(e) {
+  if (e) e.stopPropagation();
+  if (state.feedback || state.finished) return;
+  state.showTr = true;
+  render();
+}
+
+function doShuffle() {
+  state.cards = shuffle([...VOCAB]);
+  state.idx = 0;
+  state.showTr = false;
+  state.showMeaning = false;
+  state.feedback = null;
+  state.finished = false;
+  saveProgress();
+  render();
+}
+
+function restart() {
+  doShuffle();
+}
+
+let touchStart = null;
+let touchDelta = 0;
+let cardOuterEl = null;
+let swipeHintRight = null;
+let swipeHintLeft = null;
+
+function onTouchStart(e) {
+  if (state.feedback || state.finished) return;
+  touchStart = e.touches[0].clientX;
+  touchDelta = 0;
+  if (cardOuterEl) cardOuterEl.classList.add('dragging');
+}
+function onTouchMove(e) {
+  if (touchStart === null || state.feedback) return;
+  touchDelta = e.touches[0].clientX - touchStart;
+  if (cardOuterEl) {
+    cardOuterEl.style.transform = `translateX(${touchDelta * 0.4}px) rotate(${touchDelta * 0.03}deg)`;
+  }
+  if (swipeHintRight) {
+    swipeHintRight.style.opacity = touchDelta > 30 ? Math.min((touchDelta - 30) / 60, 1) : 0;
+  }
+  if (swipeHintLeft) {
+    swipeHintLeft.style.opacity = touchDelta < -30 ? Math.min((-touchDelta - 30) / 60, 1) : 0;
+  }
+}
+function onTouchEnd() {
+  if (cardOuterEl) {
+    cardOuterEl.classList.remove('dragging');
+    cardOuterEl.style.transform = '';
+  }
+  if (swipeHintRight) swipeHintRight.style.opacity = 0;
+  if (swipeHintLeft) swipeHintLeft.style.opacity = 0;
+
+  if (state.feedback) { touchStart = null; touchDelta = 0; return; }
+  const delta = touchDelta;
+  touchStart = null;
+  touchDelta = 0;
+  if (delta > 80) {
+    if (cardOuterEl) cardOuterEl.classList.add('swipe-right');
+    setTimeout(() => cardOuterEl && cardOuterEl.classList.remove('swipe-right'), 300);
+    handleCorrect();
+  } else if (delta < -80) {
+    if (cardOuterEl) cardOuterEl.classList.add('swipe-left');
+    setTimeout(() => cardOuterEl && cardOuterEl.classList.remove('swipe-left'), 300);
+    handleWrong();
+  }
+}
+
+function render() {
+  app.innerHTML = '';
+
+  const coinBadge = el('div', { class: 'coin-badge' },
+    el('div', { class: 'coin-icon' }, '$'),
+    el('span', { class: 'coin-count' }, String(state.coins))
+  );
+  app.appendChild(coinBadge);
+
+  const backLink = el('a', {
+    class: 'back-link',
+    href: 'index.html',
+    'aria-label': 'חזרה לתפריט'
+  }, '‹');
+  app.appendChild(backLink);
+
+  const resetBtn = el('button', {
+    class: 'reset-btn',
+    onclick: resetProgress,
+    title: 'אפס התקדמות'
+  }, 'איפוס');
+  app.appendChild(resetBtn);
+
+  if (state.finished) {
+    const total = state.cards.length;
+    const score = total ? Math.round((state.correct / total) * 100) : 0;
+    const finishedBox = el('div', { class: 'finished-box' },
+      el('div', { class: 'finished-emoji' }, '🎉'),
+      el('div', { class: 'finished-title' }, '!סיימת'),
+      el('div', { class: 'finished-stat' }, `נכון: ${state.correct} | לא נכון: ${state.wrong}`),
+      el('div', { class: 'finished-stat' }, `💰 מטבעות: ${state.coins}`),
+      el('div', { class: 'finished-stat', style: { fontSize: '24px', marginTop: '8px' } }, `ציון: ${score}%`),
+      el('div', { class: 'finished-stat best-score' }, `🏆 שיא: ${state.bestScore}%`),
+      el('button', { class: 'btn btn-restart', onclick: restart }, '🔄 שוב מההתחלה')
+    );
+    app.appendChild(finishedBox);
+    return;
+  }
+
+  const current = state.cards[state.idx];
+  const total = state.cards.length;
+
+  const header = el('div', { class: 'card-header' },
+    el('span', { class: 'header-text' }, `מילה ${state.idx + 1}/${total}`),
+    el('span', { class: 'header-dot' }, '•'),
+    el('span', { class: 'header-text' }, `נכון: ${state.correct} לא נכון: ${state.wrong}`)
+  );
+
+  const hintRight = el('div', { class: 'swipe-hint swipe-hint-right' }, '✓');
+  const hintLeft = el('div', { class: 'swipe-hint swipe-hint-left' }, '✗');
+  swipeHintRight = hintRight;
+  swipeHintLeft = hintLeft;
+
+  const arabicFontSize = current.arabic.length > 15 ? '48px' : current.arabic.length > 8 ? '64px' : '82px';
+  const arabicWord = el('div', {
+    class: 'arabic-word',
+    style: { fontSize: arabicFontSize }
+  }, current.arabic);
+
+  const bodyChildren = [];
+  if (state.feedback) {
+    bodyChildren.push(el('div', { class: 'feedback-icon' }, state.feedback === 'correct' ? '✓' : '✗'));
+  }
+  bodyChildren.push(arabicWord);
+
+  if (!state.showTr && !state.showMeaning) {
+    bodyChildren.push(el('button', {
+      class: 'reveal-btn',
+      onclick: handleShowTr
+    }, 'הראה תעתיק'));
+  }
+  if (state.showTr) {
+    bodyChildren.push(el('div', { class: 'tr-text' }, current.tr));
+  }
+  if (state.showMeaning) {
+    bodyChildren.push(el('div', { class: 'meaning-text' }, current.heb));
+  }
+
+  const bodyClass = 'card-body' + (state.feedback ? ' ' + state.feedback : '');
+  const body = el('div', {
+    class: bodyClass,
+    onclick: handleShowMeaning
+  }, ...bodyChildren);
+
+  const cardOuter = el('div', {
+    class: 'card-outer',
+    ontouchstart: onTouchStart,
+    ontouchmove: onTouchMove,
+    ontouchend: onTouchEnd,
+    ontouchcancel: onTouchEnd
+  }, hintRight, hintLeft, header, body);
+  cardOuterEl = cardOuter;
+
+  app.appendChild(cardOuter);
+
+  const buttonsRow = el('div', { class: 'buttons-row' },
+    el('button', {
+      class: 'btn btn-correct',
+      onclick: handleCorrect,
+      disabled: !!state.feedback
+    }, 'נכון'),
+    el('button', {
+      class: 'btn btn-meaning',
+      onclick: handleShowMeaning,
+      disabled: !!state.feedback
+    }, 'משמעות'),
+    el('button', {
+      class: 'btn btn-wrong',
+      onclick: handleWrong,
+      disabled: !!state.feedback
+    }, 'לא נכון')
+  );
+  app.appendChild(buttonsRow);
+
+  const shuffleRow = el('div', { class: 'shuffle-row' },
+    el('button', {
+      class: 'btn btn-shuffle',
+      onclick: doShuffle
+    }, '🔀 ערבוב')
+  );
+  app.appendChild(shuffleRow);
+}
+
+window.addEventListener('keydown', (e) => {
+  if (state.finished || state.feedback) return;
+  if (e.key === ' ') { e.preventDefault(); handleShowMeaning(); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); handleCorrect(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); handleWrong(); }
+});
+
+// Cross-tab coin sync: if another tab/page updates the shared coin balance, refresh our display.
+window.addEventListener('storage', (e) => {
+  if (e.key === COINS_KEY) {
+    loadCoins();
+    const n = document.querySelector('.coin-count');
+    if (n) n.textContent = String(state.coins);
+  }
+});
+
+loadCoins();
+if (!loadProgress()) {
+  state.cards = shuffle([...VOCAB]);
+  saveProgress();
+}
+render();
+</script>
+</body>
+</html>

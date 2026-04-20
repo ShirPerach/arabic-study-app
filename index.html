@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2d3561">
+<title>לימוד ערבית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Handjet:wght@400;600;700;800&family=Noto+Sans+Hebrew:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+  html, body {
+    width: 100%;
+    min-height: 100vh;
+    background: #2d3561;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.2) 12%, transparent 12.5%);
+    background-size: 44px 44px;
+    direction: rtl;
+    font-family: 'Handjet', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+  body { overflow-x: hidden; }
+
+  #screen {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 16px 32px;
+    position: relative;
+  }
+
+  /* ===== Coin badge (fixed top-left) ===== */
+  .coin-badge {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    background: #f4efeb;
+    border: 4px solid #f4c9d3;
+    border-radius: 8px;
+    padding: 4px 14px 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 100;
+  }
+  .coin-icon {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, #f5d442, #e8a820);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: bold;
+    border: 2px solid #c9922a;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    color: #8a6a10;
+  }
+  .coin-count {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 600; font-size: 34px;
+    color: #f69cb1; line-height: 1;
+  }
+
+  /* ===== Shared pink card ===== */
+  .card {
+    background: #f0bcc8;
+    border: 8px solid #c98191;
+    border-radius: 31px;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+    width: 90%;
+    max-width: 620px;
+    padding: 0 32px 32px;
+    overflow: hidden;
+  }
+  .card-header {
+    background: #c98191;
+    border-radius: 10px 10px 0 0;
+    margin: 0 -32px 20px;
+    padding: 14px 24px;
+    text-align: center;
+    position: relative;
+  }
+  .card-header .title {
+    font-family: 'Handjet', sans-serif;
+    font-size: 30px; font-weight: 700;
+    color: #f8eaf7;
+  }
+
+  /* ===== Menu buttons ===== */
+  .menu-btn {
+    width: 100%;
+    max-width: 500px;
+    min-height: 90px;
+    background: #a6c5d9;
+    border: 5px solid #5e7c8a;
+    border-radius: 8px;
+    font-family: 'Handjet', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: #5e7c8a;
+    cursor: pointer;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.14);
+    transition: transform 0.1s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+  }
+  .menu-btn:hover:not(:disabled):not(.disabled) { transform: scale(1.02); }
+  .menu-btn.disabled { opacity: 0.4; cursor: default; }
+
+  .menu-stack { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+  /* ===== Back arrow ===== */
+  .back-arrow {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 36px;
+    cursor: pointer;
+    z-index: 100;
+    line-height: 1;
+    padding: 4px 12px;
+    font-family: 'Handjet', sans-serif;
+  }
+
+  /* ===== Game intro ===== */
+  .intro-title {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+    font-size: min(120px, 18vw);
+    color: #f0bcc8;
+    text-shadow: 4px 4px 4px rgba(0,0,0,0.25);
+    line-height: 1.1;
+    text-align: center;
+  }
+  .intro-subtitle {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    color: #ffd949;
+    text-shadow: -2px 4px 4px rgba(0,0,0,0.25);
+    text-align: center;
+    margin-top: 12px;
+  }
+  .intro-btn {
+    width: 260px;
+    height: 76px;
+    background: #a6c5d9;
+    border: 4px solid #5e7c8a;
+    border-radius: 6px;
+    font-family: 'Handjet', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    color: #5e7c8a;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .intro-btn:hover { filter: brightness(1.05); }
+
+  .rules-card {
+    background: #f0bcc8;
+    border: 7px solid #c98191;
+    border-radius: 11px;
+    width: 90%;
+    max-width: 460px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .rules-card .rules-header {
+    background: #c98191;
+    padding: 12px 20px;
+    text-align: center;
+  }
+  .rules-card .rules-header span {
+    font-family: 'Handjet', sans-serif;
+    font-size: 32px; font-weight: 700; color: white;
+  }
+  .rules-body {
+    padding: 20px;
+    text-align: right;
+    font-family: 'Handjet', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #5a2a3a;
+    line-height: 2;
+  }
+  .rules-body p { margin: 0; }
+
+  /* ===== Game screen ===== */
+  .game-screen {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0; left: 0;
+    cursor: url('images/gun.png') 16 16, crosshair;
+    overflow: hidden;
+  }
+
+  .lives-badge {
+    position: fixed;
+    top: 16px;
+    left: 170px;
+    background: #f4efeb;
+    border: 4px solid #f4c9d3;
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 100;
+  }
+  .life-heart {
+    width: 40px;
+    height: 40px;
+    transition: opacity 0.3s;
+    display: inline-block;
+    image-rendering: pixelated;
+  }
+  .life-heart.lost { opacity: 0.15; }
+  .life-heart.flashing { animation: flashHeart 0.6s ease; }
+
+  .game-back {
+    position: fixed;
+    top: 80px;
+    left: 16px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 36px;
+    cursor: pointer;
+    z-index: 100;
+    font-family: 'Handjet', sans-serif;
+  }
+
+  .question-block {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 40;
+    pointer-events: none;
+    width: 90%;
+    max-width: 400px;
+  }
+  .question-prompt {
+    font-family: 'Handjet', sans-serif;
+    font-size: 20px; font-weight: 700;
+    color: #fe81a3;
+    text-align: center;
+  }
+  .question-box {
+    background: #a6c5d9;
+    border: 5px solid #5e7c8a;
+    border-radius: 8px;
+    padding: 12px 40px;
+    font-family: 'Handjet', sans-serif;
+    font-size: 56px;
+    font-weight: 700;
+    color: #5e7c8a;
+    min-width: 200px;
+    text-align: center;
+    line-height: 1;
+  }
+  .timer-bar-outer {
+    width: 250px;
+    height: 10px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .timer-bar-inner {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 1s linear, background 0.3s;
+  }
+  .timer-text {
+    font-family: 'Handjet', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .score-streak {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 24px;
+    z-index: 40;
+    pointer-events: none;
+  }
+  .score-text {
+    font-family: 'Handjet', sans-serif;
+    font-size: 24px; font-weight: 700;
+    color: #f5d442;
+  }
+  .streak-text {
+    font-family: 'Handjet', sans-serif;
+    font-size: 24px; font-weight: 700;
+    animation: pulse 0.5s ease;
+  }
+
+  .gun-corner {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 120px;
+    height: auto;
+    z-index: 40;
+    pointer-events: none;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+  }
+
+  .bubble {
+    position: absolute;
+    width: min(150px, 24vw);
+    height: min(150px, 24vw);
+    background: radial-gradient(circle at 35% 35%, #f8d0da, #f0bcc8, #e8a0b4);
+    border: 4px solid rgba(201,129,145,0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: url('images/gun.png') 16 16, crosshair;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 0 -4px 8px rgba(0,0,0,0.1);
+    z-index: 10;
+    transform: translate(-50%, -50%);
+    will-change: left, top;
+    animation: float 4s ease-in-out infinite;
+  }
+  .bubble span {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: min(28px, 4.5vw);
+    font-weight: 700;
+    color: #6b2a3a;
+    text-align: center;
+    padding: 8px;
+    pointer-events: none;
+  }
+  .bubble.popping {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    transition: transform 0.4s ease-in, opacity 0.4s;
+    pointer-events: none;
+  }
+  .bubble.shaking { animation: shake 0.4s ease; }
+
+  .explosion-img {
+    position: absolute;
+    width: min(220px, 36vw);
+    height: min(220px, 36vw);
+    z-index: 30;
+    pointer-events: none;
+    image-rendering: pixelated;
+    animation: explodeImg 0.6s ease-out forwards;
+  }
+
+  /* ===== Shop (in card) ===== */
+  .shop-items {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .shop-item {
+    background: #f8e8ee;
+    border: 3px solid #c98191;
+    border-radius: 12px;
+    width: 220px;
+    padding: 16px;
+    text-align: center;
+  }
+  .shop-hearts {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+  .shop-heart-img {
+    width: 48px;
+    height: 48px;
+    image-rendering: pixelated;
+  }
+  .shop-label {
+    background: #a6c5d9;
+    border-radius: 11px;
+    padding: 10px 16px;
+    margin-bottom: 8px;
+  }
+  .shop-label span {
+    font-family: 'Handjet', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #8d303f;
+  }
+  .shop-buy {
+    background: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 20px;
+    cursor: pointer;
+    font-family: 'Noto Sans Hebrew', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 auto;
+  }
+  .shop-buy:disabled { background: #ddd; cursor: not-allowed; opacity: 0.5; }
+  .shop-buy span.price-coin { font-size: 14px; }
+
+  .shop-no-thanks {
+    display: block;
+    margin: 20px auto 0;
+    background: none;
+    border: none;
+    color: #8d303f;
+    font-family: 'Handjet', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  /* In-game shop overlay */
+  .game-over-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(45,53,97,0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 200;
+    padding: 80px 16px 32px;
+    overflow-y: auto;
+  }
+  .game-over-overlay .lives-lost-title {
+    font-family: 'Handjet', sans-serif;
+    font-size: 42px; font-weight: 800;
+    color: #ff6688;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .game-over-overlay .lives-lost-question {
+    font-family: 'Handjet', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #f8eaf7;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  /* ===== Game over screen ===== */
+  .gameover-title-box {
+    background: #a6c5d9;
+    border: 5px solid #5e7c8a;
+    border-radius: 8px;
+    padding: 16px 48px;
+    text-align: center;
+  }
+  .gameover-title-box span {
+    font-family: 'Handjet', sans-serif;
+    font-size: 72px;
+    font-weight: 700;
+    color: #5e7c8a;
+    line-height: 1;
+  }
+  .gameover-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #f4c9d3;
+    font-family: 'Handjet', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .gameover-stats .small { font-size: 36px; }
+  .gameover-btn-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .gameover-btn {
+    background: #a6c5d9;
+    border: 5px solid #5e7c8a;
+    border-radius: 8px;
+    padding: 10px 28px;
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+    color: #5e7c8a;
+    cursor: pointer;
+    min-width: 140px;
+    text-align: center;
+    line-height: 1;
+  }
+  .gameover-btn:hover { filter: brightness(1.05); }
+
+  /* ===== Animations ===== */
+  @keyframes float {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+    50% { transform: translate(-50%, -50%) translateY(-12px); }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+    20% { transform: translate(-50%, -50%) translateX(-10px); }
+    40% { transform: translate(-50%, -50%) translateX(10px); }
+    60% { transform: translate(-50%, -50%) translateX(-6px); }
+    80% { transform: translate(-50%, -50%) translateX(6px); }
+  }
+  @keyframes flashHeart {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    25% { opacity: 0.2; transform: scale(1.3); }
+    50% { opacity: 1; transform: scale(0.8); }
+    75% { opacity: 0.2; transform: scale(1.2); }
+  }
+  @keyframes explodeImg {
+    0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+  @keyframes coinPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+  .coin-pop { animation: coinPop 0.5s ease-out; }
+
+  @media (max-width: 500px) {
+    .menu-btn { font-size: 36px; min-height: 70px; }
+    .card-header .title { font-size: 22px; }
+    .gameover-title-box span { font-size: 48px; }
+    .gameover-stats { font-size: 32px; }
+    .gameover-stats .small { font-size: 24px; }
+    .lives-badge { left: 150px; padding: 8px 10px; }
+    .life-heart { width: 30px; height: 30px; }
+    .gun-corner { width: 80px; bottom: 12px; left: 12px; }
+    .shop-heart-img { width: 36px; height: 36px; }
+    .coin-count { font-size: 28px; }
+    .coin-icon { width: 28px; height: 28px; }
+    .question-box { font-size: 36px; padding: 8px 24px; }
+    .intro-btn { font-size: 42px; width: 220px; height: 64px; }
+  }
+</style>
+</head>
+<body>
+<div id="coin-badge-container"></div>
+<div id="screen"></div>
+
+<script>
+/* =========================================================
+ * Arabic Study App — vanilla JS port of arabic_study_app.jsx
+ * Single-file build per claude_code_game_prompt.md
+ * ========================================================= */
+
+// URL for the separately-deployed flashcards page.
+// Change this if you host flashcards at a different path.
+const FLASHCARDS_URL = 'flashcards.html';
+
+const WORDS = [
+  {ar:"دَار",heb:"דירה"},{ar:"أَرْنَب",heb:"ארנב"},{ar:"أُذُن",heb:"אוזן"},
+  {ar:"بِنْت",heb:"בת, ילדה"},{ar:"وَرْد",heb:"ורדים"},{ar:"إِبْن",heb:"בן"},
+  {ar:"بَيْت",heb:"בית"},{ar:"يَد",heb:"יד"},{ar:"بُيُوت",heb:"בתים"},
+  {ar:"وَزِير",heb:"שר"},{ar:"دُبّ",heb:"דב"},{ar:"ثَوْر",heb:"שור"},
+  {ar:"أَب",heb:"אב, אבא"},{ar:"ثَوْب",heb:"בגד"},{ar:"تُوت",heb:"תותים"},
+  {ar:"بَاب",heb:"דלת, שער"},{ar:"زَيْتُون",heb:"זיתים"},{ar:"أَثَاث",heb:"ריהוט"},
+  {ar:"أُمّ",heb:"אם, אמא"},{ar:"وَلَد",heb:"ילד"},{ar:"مُدِير",heb:"מנהל"},
+  {ar:"أَوْلَاد",heb:"ילדים"},{ar:"مُمْتَاز",heb:"מצוין"},{ar:"تِلْمِيذ",heb:"תלמיד"},
+  {ar:"مَدِينَة",heb:"עיר"},{ar:"تَمْرِين",heb:"תרגיל"},{ar:"أَهْل",heb:"משפחה"},
+  {ar:"مَلِك",heb:"מלך"},{ar:"مَمْلَكَة",heb:"ממלכה"},{ar:"كِتَاب",heb:"ספר"},
+  {ar:"كُتُب",heb:"ספרים"},{ar:"دَفْتَر",heb:"מחברת"},{ar:"فِيل",heb:"פיל"},
+  {ar:"دُكَّان",heb:"חנות"},{ar:"زُرَافَة",heb:"ג'ירפה"},{ar:"كَبِير",heb:"גדול"},
+  {ar:"كَلْب",heb:"כלב"},{ar:"كَلِمَة",heb:"מילה"},{ar:"يَوْم",heb:"יום"},
+  {ar:"فَلَافِل",heb:"פלאפל"},{ar:"رَفِيق",heb:"חבר"},{ar:"رَأْس",heb:"ראש"},
+  {ar:"سَلَام",heb:"שלום"},{ar:"سِنّ",heb:"שן"},{ar:"سَنَة",heb:"שנה"},
+  {ar:"مُعَلِّم",heb:"מורה"},{ar:"قَهْوَة",heb:"קפה"},{ar:"سَفِينَة",heb:"ספינה"},
+  {ar:"مَدْرَسَة",heb:"בית ספר"},{ar:"سُوق",heb:"שוק"},{ar:"غُرْفَة",heb:"חדר"},
+  {ar:"أُغْنِيَة",heb:"שיר"},{ar:"لُغَة",heb:"שפה"},{ar:"نَمْلَة",heb:"נמלה"},
+  {ar:"نَمِر",heb:"נמר"},{ar:"تِلْمِيذَة",heb:"תלמידה"},{ar:"كِيوِي",heb:"קיווי"},
+  {ar:"غُورِيلَا",heb:"גורילה"},{ar:"عِنْزَة",heb:"עז"},
+];
+
+/* ============ Persistent state ============ */
+const STORAGE = {
+  coins: 'arabicApp_coins',
+  highScore: 'arabicApp_highScore',
+  bestStreak: 'arabicApp_bestStreak',
+  gamesPlayed: 'arabicApp_gamesPlayed',
+};
+
+const persist = {
+  coins: 0,
+  highScore: 0,
+  bestStreak: 0,
+  gamesPlayed: 0,
+};
+
+function loadPersist() {
+  try {
+    persist.coins = parseInt(localStorage.getItem(STORAGE.coins) || '0', 10) || 0;
+    persist.highScore = parseInt(localStorage.getItem(STORAGE.highScore) || '0', 10) || 0;
+    persist.bestStreak = parseInt(localStorage.getItem(STORAGE.bestStreak) || '0', 10) || 0;
+    persist.gamesPlayed = parseInt(localStorage.getItem(STORAGE.gamesPlayed) || '0', 10) || 0;
+  } catch {}
+}
+function savePersist() {
+  try {
+    localStorage.setItem(STORAGE.coins, String(persist.coins));
+    localStorage.setItem(STORAGE.highScore, String(persist.highScore));
+    localStorage.setItem(STORAGE.bestStreak, String(persist.bestStreak));
+    localStorage.setItem(STORAGE.gamesPlayed, String(persist.gamesPlayed));
+  } catch {}
+}
+
+/* ============ App state ============ */
+const state = {
+  screen: 'menu', // menu | gameIntro | playing | shop | gameover
+  gameResult: null,
+  shopFromGame: false,
+  showRules: false,
+};
+
+/* ============ DOM helpers ============ */
+function el(tag, props = {}, ...children) {
+  const e = document.createElement(tag);
+  for (const k in props) {
+    if (k === 'class') e.className = props[k];
+    else if (k === 'style' && typeof props[k] === 'object') Object.assign(e.style, props[k]);
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2).toLowerCase(), props[k]);
+    else if (k === 'disabled') { if (props[k]) e.disabled = true; }
+    else if (k === 'html') e.innerHTML = props[k];
+    else e.setAttribute(k, props[k]);
+  }
+  for (const c of children) {
+    if (c == null || c === false) continue;
+    e.appendChild(typeof c === 'string' || typeof c === 'number' ? document.createTextNode(String(c)) : c);
+  }
+  return e;
+}
+
+/* ============ Audio ============ */
+function playBoom() {
+  try {
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.connect(gain); gain.connect(ac.destination);
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(150, ac.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(30, ac.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.3, ac.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.3);
+    osc.start(ac.currentTime);
+    osc.stop(ac.currentTime + 0.3);
+  } catch {}
+}
+function playCorrect() {
+  try {
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.connect(gain); gain.connect(ac.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(500, ac.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(900, ac.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.2, ac.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.2);
+    osc.start(ac.currentTime);
+    osc.stop(ac.currentTime + 0.2);
+  } catch {}
+}
+
+/* ============ Coin badge ============ */
+const coinBadgeContainer = document.getElementById('coin-badge-container');
+let coinCountEl = null;
+
+function renderCoinBadge() {
+  coinBadgeContainer.innerHTML = '';
+  const badge = el('div', { class: 'coin-badge' },
+    el('div', { class: 'coin-icon' }, '$'),
+    el('span', { class: 'coin-count' }, String(persist.coins))
+  );
+  coinBadgeContainer.appendChild(badge);
+  coinCountEl = badge.querySelector('.coin-count');
+}
+function updateCoins(newVal, animate = false) {
+  persist.coins = Math.max(0, newVal | 0);
+  savePersist();
+  if (coinCountEl) {
+    coinCountEl.textContent = String(persist.coins);
+    if (animate) {
+      coinCountEl.classList.remove('coin-pop');
+      void coinCountEl.offsetWidth;
+      coinCountEl.classList.add('coin-pop');
+      setTimeout(() => coinCountEl && coinCountEl.classList.remove('coin-pop'), 500);
+    }
+  }
+}
+
+/* ============ Question generation ============ */
+function makeQuestion() {
+  const idx = Math.floor(Math.random() * WORDS.length);
+  const correct = WORDS[idx];
+  const others = WORDS.filter((_, i) => i !== idx)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3);
+  const options = [correct, ...others].sort(() => Math.random() - 0.5);
+  return {
+    prompt: correct.heb,
+    correctAr: correct.ar,
+    options: options.map(o => o.ar),
+    correctIndex: options.indexOf(correct),
+  };
+}
+
+/* ============ Navigation ============ */
+const screenEl = document.getElementById('screen');
+
+function navigate(target) {
+  teardownGame();
+  state.screen = target;
+  if (target === 'menu') state.showRules = false;
+  render();
+}
+
+function render() {
+  screenEl.innerHTML = '';
+  screenEl.style.padding = '80px 16px 32px';
+  screenEl.className = '';
+  switch (state.screen) {
+    case 'menu': renderMenu(); break;
+    case 'gameIntro': renderGameIntro(); break;
+    case 'playing': renderGame(); break;
+    case 'shop': renderShop({ inGame: false }); break;
+    case 'gameover': renderGameOver(); break;
+  }
+}
+
+/* ============ Main menu ============ */
+function renderMenu() {
+  const card = el('div', { class: 'card' },
+    el('div', { class: 'card-header' },
+      el('span', { class: 'title' }, 'ברוכים הבאים ללמידה למבחן בערבית!')
+    ),
+    el('div', { class: 'menu-stack' },
+      el('a', {
+        class: 'menu-btn',
+        href: FLASHCARDS_URL,
+      }, 'כרטיסיות מילים'),
+      el('button', {
+        class: 'menu-btn',
+        onclick: () => navigate('gameIntro')
+      }, 'משחקייה'),
+      el('button', {
+        class: 'menu-btn',
+        onclick: () => navigate('shop')
+      }, 'חנות'),
+      el('button', { class: 'menu-btn disabled', disabled: true }, 'בקרוב...')
+    )
+  );
+  screenEl.appendChild(card);
+}
+
+/* ============ Game intro ============ */
+function renderGameIntro() {
+  const backBtn = el('button', {
+    class: 'back-arrow',
+    onclick: () => navigate('menu'),
+    'aria-label': 'חזרה'
+  }, '‹');
+
+  const title = el('h1', { class: 'intro-title' }, 'פוצץ אותה!');
+  const subtitle = el('p', { class: 'intro-subtitle' }, 'המשחק היחידי בו ירי הוא חינוכי');
+  const playBtn = el('button', {
+    class: 'intro-btn',
+    onclick: () => navigate('playing')
+  }, 'שחק!');
+  const rulesBtn = el('button', {
+    class: 'intro-btn',
+    onclick: () => { state.showRules = !state.showRules; render(); }
+  }, 'חוקים');
+
+  const wrap = el('div', {
+    style: { textAlign: 'center', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }
+  }, title, subtitle, playBtn, rulesBtn);
+
+  if (state.showRules) {
+    const rules = el('div', { class: 'rules-card' },
+      el('div', { class: 'rules-header' }, el('span', {}, 'חוקים')),
+      el('div', { class: 'rules-body' },
+        el('p', {}, '🎯 מופיעה מילה בעברית למעלה'),
+        el('p', {}, '🫧 4 בועות עם מילים בערבית צפות על המסך'),
+        el('p', {}, '🔫 לחצי על הבועה עם התרגום הנכון'),
+        el('p', {}, '✅ תשובה נכונה = מטבעות 💰'),
+        el('p', {}, '❌ תשובה שגויה = מאבדים ❤️'),
+        el('p', {}, '⏱️ 20 שניות לכל שאלה'),
+        el('p', {}, '🏪 נגמרו החיים? אפשר לקנות עוד בחנות')
+      )
+    );
+    wrap.appendChild(rules);
+  }
+
+  screenEl.appendChild(backBtn);
+  screenEl.appendChild(wrap);
+}
+
+/* ============ Shooting game ============ */
+const game = {
+  lives: 3,
+  score: 0,
+  streak: 0,
+  sessionBestStreak: 0,
+  questionsAnswered: 0,
+  correctAnswers: 0,
+  question: null,
+  timer: 20,
+  bubbles: [], // {id, text, correct, x, y, vx, vy, el, popping, shaking}
+  active: false,
+  container: null,
+  timerBarEl: null,
+  timerTextEl: null,
+  scoreTextEl: null,
+  streakTextEl: null,
+  livesEls: [],
+  promptEl: null,
+  rafId: null,
+  timerInterval: null,
+  nextTimeout: null,
+  explosionTimeout: null,
+  shopOverlayEl: null,
+};
+
+function teardownGame() {
+  cancelAnimationFrame(game.rafId);
+  clearInterval(game.timerInterval);
+  clearTimeout(game.nextTimeout);
+  game.rafId = null;
+  game.timerInterval = null;
+  game.nextTimeout = null;
+  game.active = false;
+  if (game.shopOverlayEl && game.shopOverlayEl.parentElement) {
+    game.shopOverlayEl.parentElement.removeChild(game.shopOverlayEl);
+  }
+  game.shopOverlayEl = null;
+  game.bubbles = [];
+}
+
+function renderGame() {
+  game.lives = 3;
+  game.score = 0;
+  game.streak = 0;
+  game.sessionBestStreak = 0;
+  game.questionsAnswered = 0;
+  game.correctAnswers = 0;
+  game.active = true;
+
+  screenEl.style.padding = '0';
+
+  const container = el('div', { class: 'game-screen', id: 'gameScreen' });
+  game.container = container;
+
+  // Lives badge
+  const livesBadge = el('div', { class: 'lives-badge' });
+  game.livesEls = [];
+  for (let i = 0; i < 3; i++) {
+    const heart = el('img', { class: 'life-heart', src: 'images/heart.png', alt: '' });
+    livesBadge.appendChild(heart);
+    game.livesEls.push(heart);
+  }
+  container.appendChild(livesBadge);
+
+  // Back button
+  container.appendChild(el('button', {
+    class: 'game-back',
+    onclick: () => {
+      teardownGame();
+      navigate('menu');
+    }
+  }, '‹'));
+
+  // Question block (prompt + timer)
+  const qBlock = el('div', { class: 'question-block' });
+  qBlock.appendChild(el('div', { class: 'question-prompt' }, 'לירות במילה שהמשמעות שלה היא:'));
+  const qBox = el('div', { class: 'question-box' }, '');
+  game.promptEl = qBox;
+  qBlock.appendChild(qBox);
+  const timerOuter = el('div', { class: 'timer-bar-outer' });
+  const timerInner = el('div', { class: 'timer-bar-inner' });
+  timerInner.style.width = '100%';
+  timerInner.style.background = '#6abf7b';
+  timerOuter.appendChild(timerInner);
+  game.timerBarEl = timerInner;
+  qBlock.appendChild(timerOuter);
+  const timerTxt = el('div', { class: 'timer-text' }, '20');
+  timerTxt.style.color = '#6abf7b';
+  game.timerTextEl = timerTxt;
+  qBlock.appendChild(timerTxt);
+  container.appendChild(qBlock);
+
+  // Score + streak
+  const scoreStreak = el('div', { class: 'score-streak' });
+  const scoreText = el('div', { class: 'score-text' }, '💰 0');
+  game.scoreTextEl = scoreText;
+  scoreStreak.appendChild(scoreText);
+  const streakText = el('div', { class: 'streak-text' }, '');
+  streakText.style.display = 'none';
+  game.streakTextEl = streakText;
+  scoreStreak.appendChild(streakText);
+  container.appendChild(scoreStreak);
+
+  // Gun in corner
+  container.appendChild(el('img', { class: 'gun-corner', src: 'images/gun.png', alt: '' }));
+
+  screenEl.appendChild(container);
+
+  newQuestion();
+  startBubbleLoop();
+  startTimer();
+}
+
+function newQuestion() {
+  game.question = makeQuestion();
+  game.timer = 20;
+  updateTimerUI();
+  if (game.promptEl) game.promptEl.textContent = game.question.prompt;
+
+  // Remove existing bubble elements
+  for (const b of game.bubbles) {
+    if (b.el && b.el.parentElement) b.el.parentElement.removeChild(b.el);
+  }
+  game.bubbles = [];
+
+  const positions = [
+    { x: 15, y: 30 }, { x: 75, y: 28 },
+    { x: 50, y: 58 }, { x: 82, y: 68 },
+  ];
+  game.question.options.forEach((text, i) => {
+    const b = {
+      id: Math.random(),
+      text,
+      correct: i === game.question.correctIndex,
+      x: positions[i].x + (Math.random() - 0.5) * 10,
+      y: positions[i].y + (Math.random() - 0.5) * 10,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      popping: false,
+      shaking: false,
+      el: null,
+    };
+    const bEl = el('div', {
+      class: 'bubble',
+      style: { left: b.x + '%', top: b.y + '%', animationDelay: (i * 0.7) + 's' },
+      onclick: () => handleBubbleClick(b),
+    }, el('span', {}, text));
+    b.el = bEl;
+    game.bubbles.push(b);
+    game.container.appendChild(bEl);
+  });
+}
+
+function startBubbleLoop() {
+  const loop = () => {
+    if (!game.active) { game.rafId = null; return; }
+    for (const b of game.bubbles) {
+      if (b.popping) continue;
+      b.x += b.vx;
+      b.y += b.vy;
+      if (b.x < 8 || b.x > 90) b.vx = -b.vx;
+      if (b.y < 20 || b.y > 85) b.vy = -b.vy;
+      b.vx += (Math.random() - 0.5) * 0.02;
+      b.vy += (Math.random() - 0.5) * 0.02;
+      b.vx = Math.max(-0.5, Math.min(0.5, b.vx));
+      b.vy = Math.max(-0.5, Math.min(0.5, b.vy));
+      if (b.el) {
+        b.el.style.left = b.x + '%';
+        b.el.style.top = b.y + '%';
+      }
+    }
+    game.rafId = requestAnimationFrame(loop);
+  };
+  game.rafId = requestAnimationFrame(loop);
+}
+
+function startTimer() {
+  clearInterval(game.timerInterval);
+  game.timerInterval = setInterval(() => {
+    if (!game.active) return;
+    game.timer -= 1;
+    if (game.timer <= 0) {
+      handleTimeout();
+    } else {
+      updateTimerUI();
+    }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  const pct = Math.max(0, (game.timer / 20) * 100);
+  const color = game.timer <= 5 ? '#ff4444' : game.timer <= 10 ? '#ffaa33' : '#6abf7b';
+  if (game.timerBarEl) {
+    game.timerBarEl.style.width = pct + '%';
+    game.timerBarEl.style.background = color;
+  }
+  if (game.timerTextEl) {
+    game.timerTextEl.textContent = String(Math.max(0, game.timer));
+    game.timerTextEl.style.color = color;
+  }
+}
+
+function handleTimeout() {
+  loseLife();
+  if (!game.active) return;
+  game.questionsAnswered += 1;
+  newQuestion();
+}
+
+function loseLife() {
+  game.lives -= 1;
+  const lostIdx = game.lives; // the heart that just vanished
+  if (game.livesEls[lostIdx]) {
+    game.livesEls[lostIdx].classList.add('flashing');
+    setTimeout(() => {
+      if (game.livesEls[lostIdx]) {
+        game.livesEls[lostIdx].classList.remove('flashing');
+        game.livesEls[lostIdx].classList.add('lost');
+      }
+    }, 600);
+  }
+  if (game.lives <= 0) {
+    game.active = false;
+    clearInterval(game.timerInterval);
+    setTimeout(showInGameShop, 800);
+  }
+}
+
+function updateScoreUI() {
+  if (game.scoreTextEl) game.scoreTextEl.textContent = '💰 ' + game.score;
+  if (game.streakTextEl) {
+    if (game.streak >= 2) {
+      game.streakTextEl.style.display = '';
+      game.streakTextEl.textContent = '🔥 ' + game.streak;
+      game.streakTextEl.style.color = game.streak >= 5 ? '#ff4444' : '#ffaa33';
+      game.streakTextEl.style.animation = 'none';
+      void game.streakTextEl.offsetWidth;
+      game.streakTextEl.style.animation = 'pulse 0.5s ease';
+    } else {
+      game.streakTextEl.style.display = 'none';
+    }
+  }
+}
+
+function spawnExplosion(xPct, yPct) {
+  if (!game.container) return;
+  const exp = el('img', {
+    class: 'explosion-img',
+    src: 'images/explosion.png',
+    alt: '',
+    style: { left: xPct + '%', top: yPct + '%' },
+  });
+  game.container.appendChild(exp);
+  setTimeout(() => { if (exp.parentElement) exp.parentElement.removeChild(exp); }, 600);
+}
+
+function handleBubbleClick(bubble) {
+  if (!game.active || bubble.popping) return;
+
+  if (bubble.correct) {
+    playBoom();
+    setTimeout(playCorrect, 150);
+    spawnExplosion(bubble.x, bubble.y);
+
+    bubble.popping = true;
+    if (bubble.el) {
+      bubble.el.classList.add('popping');
+    }
+
+    const earned = game.streak >= 4 ? 3 : game.streak >= 2 ? 2 : 1;
+    updateCoins(persist.coins + earned, true);
+    game.score += 10 + game.streak * 2;
+    game.streak += 1;
+    if (game.streak > game.sessionBestStreak) game.sessionBestStreak = game.streak;
+    game.correctAnswers += 1;
+    game.questionsAnswered += 1;
+    updateScoreUI();
+
+    clearTimeout(game.nextTimeout);
+    game.nextTimeout = setTimeout(() => {
+      if (!game.active) return;
+      newQuestion();
+    }, 600);
+  } else {
+    playBoom();
+    game.streak = 0;
+    updateScoreUI();
+    if (bubble.el) {
+      bubble.el.classList.add('shaking');
+      setTimeout(() => bubble.el && bubble.el.classList.remove('shaking'), 500);
+    }
+    loseLife();
+  }
+}
+
+/* ============ In-game shop overlay (when lives run out) ============ */
+function showInGameShop() {
+  if (!game.container) return;
+  const overlay = el('div', { class: 'game-over-overlay' });
+  overlay.appendChild(el('div', { class: 'lives-lost-title' }, 'נגמרו החיים! 💔'));
+  overlay.appendChild(el('div', { class: 'lives-lost-question' }, 'האם תרצו לקנות עוד חיים?'));
+  overlay.appendChild(buildShopCard({
+    inGame: true,
+    onBuy: (amount) => {
+      game.lives = amount;
+      for (let i = 0; i < 3; i++) {
+        if (game.livesEls[i]) {
+          game.livesEls[i].classList.remove('lost', 'flashing');
+          if (i >= amount) game.livesEls[i].classList.add('lost');
+        }
+      }
+      if (overlay.parentElement) overlay.parentElement.removeChild(overlay);
+      game.shopOverlayEl = null;
+      game.active = true;
+      game.questionsAnswered += 1;
+      newQuestion();
+      startTimer();
+      if (!game.rafId) startBubbleLoop();
+    },
+    onBack: () => {
+      // "לא תודה" → game over screen
+      finishGame();
+    },
+    backLabel: 'לא תודה, חזרה לתפריט'
+  }));
+  game.container.appendChild(overlay);
+  game.shopOverlayEl = overlay;
+}
+
+function finishGame() {
+  const stats = {
+    score: game.score,
+    coins: persist.coins,
+    correctAnswers: game.correctAnswers,
+    questionsAnswered: game.questionsAnswered,
+    bestStreak: game.sessionBestStreak,
+  };
+  if (game.score > persist.highScore) persist.highScore = game.score;
+  if (game.sessionBestStreak > persist.bestStreak) persist.bestStreak = game.sessionBestStreak;
+  persist.gamesPlayed += 1;
+  savePersist();
+
+  state.gameResult = stats;
+  teardownGame();
+  state.screen = 'gameover';
+  render();
+}
+
+/* ============ Shop ============ */
+function buildShopCard({ inGame, onBuy, onBack, backLabel }) {
+  const card = el('div', { class: 'card' });
+  const header = el('div', { class: 'card-header' },
+    el('span', { class: 'title' }, 'חנות')
+  );
+  card.appendChild(header);
+
+  const items = el('div', { class: 'shop-items' });
+  [{ n: 1, cost: 50 }, { n: 3, cost: 150 }].forEach(({ n, cost }) => {
+    const canAfford = persist.coins >= cost;
+    const item = el('div', { class: 'shop-item' });
+    const hearts = el('div', { class: 'shop-hearts' });
+    for (let hi = 0; hi < n; hi++) {
+      hearts.appendChild(el('img', { class: 'shop-heart-img', src: 'images/heart.png', alt: '' }));
+    }
+    item.appendChild(hearts);
+    item.appendChild(el('div', { class: 'shop-label' }, el('span', {}, 'בונוס חיים ' + n)));
+    const buyBtn = el('button', {
+      class: 'shop-buy',
+      disabled: !canAfford,
+      onclick: () => {
+        if (persist.coins < cost) return;
+        updateCoins(persist.coins - cost, true);
+        if (onBuy) onBuy(n);
+        else alert('קנית ' + n + ' חיים! ❤️');
+      }
+    },
+      el('span', { class: 'price-coin' }, '💰'),
+      ' ' + cost
+    );
+    item.appendChild(buyBtn);
+    items.appendChild(item);
+  });
+  card.appendChild(items);
+
+  if (inGame) {
+    card.appendChild(el('button', {
+      class: 'shop-no-thanks',
+      onclick: onBack
+    }, backLabel || 'לא תודה, חזרה לתפריט'));
+  }
+
+  return card;
+}
+
+function renderShop({ inGame }) {
+  const backBtn = el('button', {
+    class: 'back-arrow',
+    onclick: () => navigate('menu'),
+    'aria-label': 'חזרה'
+  }, '‹');
+  screenEl.appendChild(backBtn);
+
+  const card = buildShopCard({
+    inGame: false,
+    onBuy: (n) => { alert('קנית ' + n + ' חיים! ❤️'); },
+  });
+  screenEl.appendChild(card);
+}
+
+/* ============ Game over ============ */
+function renderGameOver() {
+  const stats = state.gameResult || { score: 0, coins: persist.coins, correctAnswers: 0, questionsAnswered: 0, bestStreak: 0 };
+  const pct = stats.questionsAnswered > 0 ? Math.round((stats.correctAnswers / stats.questionsAnswered) * 100) : 0;
+
+  const backBtn = el('button', {
+    class: 'back-arrow',
+    onclick: () => navigate('menu'),
+    'aria-label': 'חזרה'
+  }, '‹');
+  screenEl.appendChild(backBtn);
+
+  const titleBox = el('div', { class: 'gameover-title-box' },
+    el('span', {}, 'סיכום משחק')
+  );
+  const stat = el('div', { class: 'gameover-stats' },
+    el('div', {}, 'שיא: ' + stats.bestStreak + ' 🔥'),
+    el('div', {}, 'אחוז הצלחה: ' + pct + '%'),
+    el('div', {}, '💰 מטבעות: ' + stats.coins),
+    el('div', { class: 'small' }, '✅ ' + stats.correctAnswers + '/' + stats.questionsAnswered + ' תשובות נכונות')
+  );
+  const btnRow = el('div', { class: 'gameover-btn-row' },
+    el('button', {
+      class: 'gameover-btn',
+      style: { fontSize: '40px' },
+      onclick: () => navigate('menu')
+    }, 'חזרה'),
+    el('button', {
+      class: 'gameover-btn',
+      style: { fontSize: '34px' },
+      onclick: () => navigate('playing')
+    }, 'סיבוב נוסף')
+  );
+
+  const wrap = el('div', {
+    style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', padding: '32px 16px' }
+  }, titleBox, stat, btnRow);
+  screenEl.appendChild(wrap);
+}
+
+/* ============ Boot ============ */
+loadPersist();
+renderCoinBadge();
+render();
+</script>
+</body>
+</html>
