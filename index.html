@@ -35,10 +35,17 @@
   }
 
   /* ===== Coin badge (fixed top-left) ===== */
-  .coin-badge {
+  #coin-badge-container {
     position: fixed;
     top: 16px;
     left: 16px;
+    z-index: 100;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .coin-badge,
+  .hint-badge {
     background: #f4efeb;
     border: 4px solid #f4c9d3;
     border-radius: 8px;
@@ -46,7 +53,34 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    z-index: 100;
+  }
+  .hint-lamp-icon {
+    width: 34px;
+    height: 34px;
+    image-rendering: pixelated;
+    object-fit: contain;
+  }
+  .hint-lamp-placeholder {
+    width: 34px;
+    height: 34px;
+    background: radial-gradient(circle at 40% 35%, #fff3a6, #ffd940 55%, #c9922a);
+    border: 2px solid #c9922a;
+    border-radius: 50% 50% 40% 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: #8a6a10;
+    line-height: 1;
+  }
+  .hint-count {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 600;
+    font-size: 34px;
+    color: #f69cb1;
+    line-height: 1;
   }
   .coin-icon {
     width: 34px; height: 34px;
@@ -564,6 +598,8 @@
     .life-heart { width: 30px; height: 30px; }
     .gun-corner { width: 80px; bottom: 12px; left: 12px; }
     .shop-heart-img { width: 36px; height: 36px; }
+    .shop-lamp-img, .shop-lamp-placeholder { width: 26px; height: 26px; }
+    .shop-lamp-placeholder { font-size: 14px; }
     .coin-count { font-size: 28px; }
     .coin-icon { width: 28px; height: 28px; }
     .question-box { font-size: 36px; padding: 8px 24px; }
@@ -909,6 +945,432 @@
     60% { transform: translateX(-4px); }
     80% { transform: translateX(4px); }
   }
+
+  /* ===== Texts — select screen ===== */
+  .texts-title {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+    font-size: min(96px, 18vw);
+    color: #f69cb1;
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 16px;
+    text-shadow: 3px 3px 4px rgba(0,0,0,0.25);
+  }
+  .texts-filter-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .texts-filter-btn {
+    background: #f4efeb;
+    border: 3px solid #fed9f4;
+    border-radius: 10px;
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: #5e7c8a;
+    padding: 6px 22px;
+    cursor: pointer;
+    line-height: 1;
+    transition: all 0.15s;
+  }
+  .texts-filter-btn:hover { filter: brightness(1.05); }
+  .texts-filter-btn.active {
+    background: #fed9f4;
+    border-color: #c98191;
+    color: #8d303f;
+  }
+  .texts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 18px;
+    width: 100%;
+    max-width: 920px;
+    padding: 0 8px;
+  }
+  .text-card {
+    background: #a6c5d9;
+    border: 5px solid #5e7c8a;
+    border-radius: 23px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    min-height: 275px;
+    font-family: 'Handjet', sans-serif;
+    position: relative;
+  }
+  .text-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  }
+  .text-card-header {
+    background: #5e7c8a;
+    padding: 14px 18px;
+    text-align: center;
+  }
+  .text-card-header span {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: white;
+    line-height: 1.2;
+    direction: rtl;
+  }
+  .text-card.completed .text-card-header::after {
+    content: ' ✓';
+    color: #6abf7b;
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+  }
+  .text-card-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    font-family: 'Handjet', sans-serif;
+    font-size: 22px;
+    color: rgba(94,124,138,0.45);
+    text-align: center;
+    font-weight: 700;
+  }
+  .text-card-tags {
+    display: flex;
+    gap: 6px;
+    padding: 10px 12px 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .text-card-tag {
+    background: #f4efeb;
+    border-radius: 8px;
+    padding: 3px 12px;
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: #5e7c8a;
+    line-height: 1.2;
+  }
+  .text-card-tag.difficulty { color: #c98191; }
+  .text-card.new-card {
+    cursor: default;
+    opacity: 0.4;
+  }
+  .text-card.new-card:hover { transform: none; box-shadow: none; }
+  .text-card-new-plus {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    color: #5e7c8a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .text-card-new-plus .big-plus {
+    font-size: 96px;
+    line-height: 0.9;
+  }
+
+  /* ===== Texts — reading screen ===== */
+  .text-reading-wrap {
+    width: 100%;
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 8px;
+    margin-bottom: 20px;
+  }
+  .text-reading-card {
+    background: #f0bcc8;
+    border: 8px solid #c98191;
+    border-radius: 31px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  .text-reading-header {
+    background: #c98191;
+    padding: 14px 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .text-reading-header-title {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-weight: 700;
+    font-size: 30px;
+    color: white;
+    text-align: center;
+    line-height: 1.2;
+    direction: rtl;
+  }
+  .text-reading-header-back {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: white;
+    font-size: 36px;
+    cursor: pointer;
+    line-height: 1;
+    font-family: 'Handjet', sans-serif;
+    padding: 0 8px;
+  }
+  .text-reading-body {
+    padding: 28px 28px 32px;
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: #8d303f;
+    direction: rtl;
+    line-height: 1.9;
+    text-align: right;
+  }
+  .questions-card {
+    background: #a6c5d9;
+    border: 9px solid #5e7c8a;
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  .questions-header {
+    background: #5e7c8a;
+    padding: 20px;
+    text-align: center;
+  }
+  .questions-header-title {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+    font-size: 48px;
+    color: #b7d9ef;
+    line-height: 1;
+  }
+  .questions-body {
+    padding: 24px 20px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .question-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .question-text {
+    font-family: 'Handjet', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #5e7c8a;
+    direction: rtl;
+    line-height: 1.35;
+  }
+  .question-text.arabic {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-weight: 600;
+    font-size: 22px;
+  }
+  .question-heb-hint {
+    font-family: 'Noto Sans Hebrew', sans-serif;
+    font-size: 15px;
+    color: #5e7c8a;
+    opacity: 0.75;
+    direction: rtl;
+    margin-top: -4px;
+  }
+  .question-open-input {
+    background: #b7d9ef;
+    border: 2px solid transparent;
+    border-radius: 7px;
+    height: 50px;
+    padding: 0 16px;
+    font-family: 'Noto Sans Hebrew', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #2d3561;
+    width: 100%;
+    direction: rtl;
+    outline: none;
+    transition: background 0.3s, border-color 0.3s;
+    box-sizing: border-box;
+  }
+  .question-open-input:focus { border-color: #5e7c8a; }
+  .question-open-input.correct { background: #c5e8ca; border-color: #6abf7b; }
+  .question-open-input.wrong { background: #f0c8c8; border-color: #bf6a6a; }
+  .question-correct-answer {
+    font-family: 'Noto Sans Hebrew', sans-serif;
+    font-size: 16px;
+    color: #8a3a3a;
+    font-weight: 700;
+    direction: rtl;
+    margin-top: 2px;
+  }
+  .question-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .question-option {
+    background: #b7d9ef;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    padding: 12px 14px;
+    font-family: 'Noto Sans Hebrew', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: #2d3561;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    direction: rtl;
+    user-select: none;
+  }
+  .question-option:hover:not(.disabled) { background: #9cc4e0; }
+  .question-option.selected {
+    background: #5e7c8a;
+    color: white;
+    border-color: #3e5a68;
+  }
+  .question-option.correct {
+    background: #c5e8ca;
+    border-color: #6abf7b;
+    color: #2a5a33;
+  }
+  .question-option.wrong {
+    background: #f0c8c8;
+    border-color: #bf6a6a;
+    color: #7a2a2a;
+  }
+  .question-option.reveal-correct {
+    background: #c5e8ca;
+    border: 2px dashed #6abf7b;
+    color: #2a5a33;
+  }
+  .question-option.disabled {
+    cursor: default;
+  }
+  .check-btn {
+    background: #f4c9d3;
+    border: 4px solid #f69cb1;
+    border-radius: 10px;
+    padding: 10px 48px;
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+    font-size: 40px;
+    color: #f69cb1;
+    cursor: pointer;
+    align-self: center;
+    margin-top: 10px;
+    line-height: 1;
+    transition: filter 0.15s;
+  }
+  .check-btn:hover:not(:disabled) { filter: brightness(1.05); }
+  .check-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .arabic-word {
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 0 2px;
+    transition: background 0.15s, color 0.15s;
+    display: inline-block;
+  }
+  .arabic-word:hover {
+    background: rgba(201,129,145,0.28);
+    color: #6b2a3a;
+  }
+  .arabic-word.active {
+    background: #c98191;
+    color: white;
+  }
+
+  .word-tooltip {
+    position: absolute;
+    background: #2d3561;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 3px solid #f69cb1;
+    font-family: 'Noto Sans Hebrew', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    z-index: 200;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    direction: rtl;
+    max-width: 260px;
+    text-align: center;
+    white-space: normal;
+    pointer-events: none;
+    animation: popIn 0.18s ease;
+    line-height: 1.3;
+  }
+  .word-tooltip.miss {
+    border-color: #bf6a6a;
+    color: #f4c9d3;
+  }
+  .word-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 9px solid #f69cb1;
+  }
+  .word-tooltip.miss::before { border-bottom-color: #bf6a6a; }
+
+  .shop-lamp-img {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    object-fit: contain;
+  }
+  .shop-lamp-placeholder {
+    width: 32px;
+    height: 32px;
+    background: radial-gradient(circle at 40% 35%, #fff3a6, #ffd940 55%, #c9922a);
+    border: 2px solid #c9922a;
+    border-radius: 50% 50% 40% 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Handjet', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: #8a6a10;
+  }
+  .shop-lamps {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin-bottom: 12px;
+    align-items: center;
+  }
+
+  @media (max-width: 500px) {
+    .texts-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+    .text-card { min-height: 210px; }
+    .text-card-header span { font-size: 20px; }
+    .text-card-tag { font-size: 15px; padding: 3px 8px; }
+    .text-reading-body { font-size: 22px; padding: 18px; }
+    .text-reading-header-title { font-size: 22px; }
+    .questions-header-title { font-size: 34px; }
+    .questions-body { padding: 16px 14px 20px; }
+    .question-options { grid-template-columns: 1fr; }
+    .check-btn { font-size: 32px; padding: 8px 36px; }
+  }
 </style>
 </head>
 <body>
@@ -955,6 +1417,8 @@ const STORAGE = {
   bestStreak: 'arabicApp_bestStreak',
   gamesPlayed: 'arabicApp_gamesPlayed',
   blockHighScore: 'arabicApp_blockHighScore',
+  textsCompleted: 'arabicApp_textsCompleted',
+  hints: 'arabicApp_hints',
 };
 
 const persist = {
@@ -963,6 +1427,8 @@ const persist = {
   bestStreak: 0,
   gamesPlayed: 0,
   blockHighScore: 0,
+  textsCompleted: [],
+  hints: 3,
 };
 
 function loadPersist() {
@@ -972,7 +1438,16 @@ function loadPersist() {
     persist.bestStreak = parseInt(localStorage.getItem(STORAGE.bestStreak) || '0', 10) || 0;
     persist.gamesPlayed = parseInt(localStorage.getItem(STORAGE.gamesPlayed) || '0', 10) || 0;
     persist.blockHighScore = parseInt(localStorage.getItem(STORAGE.blockHighScore) || '0', 10) || 0;
-  } catch {}
+    const rawTexts = localStorage.getItem(STORAGE.textsCompleted);
+    persist.textsCompleted = rawTexts ? JSON.parse(rawTexts) : [];
+    if (!Array.isArray(persist.textsCompleted)) persist.textsCompleted = [];
+    // Hints: first-time users get 3; existing users retain whatever is stored.
+    const rawHints = localStorage.getItem(STORAGE.hints);
+    persist.hints = rawHints === null ? 3 : (parseInt(rawHints, 10) || 0);
+  } catch {
+    persist.textsCompleted = [];
+    persist.hints = 3;
+  }
 }
 function savePersist() {
   try {
@@ -981,25 +1456,75 @@ function savePersist() {
     localStorage.setItem(STORAGE.bestStreak, String(persist.bestStreak));
     localStorage.setItem(STORAGE.gamesPlayed, String(persist.gamesPlayed));
     localStorage.setItem(STORAGE.blockHighScore, String(persist.blockHighScore));
+    localStorage.setItem(STORAGE.textsCompleted, JSON.stringify(persist.textsCompleted));
+    localStorage.setItem(STORAGE.hints, String(persist.hints));
   } catch {}
 }
 
-// Cross-page coin sync
+// Cross-page coin + hint sync
 window.addEventListener('storage', (e) => {
   if (e.key === STORAGE.coins) {
     persist.coins = parseInt(e.newValue || '0', 10) || 0;
     if (coinCountEl) coinCountEl.textContent = String(persist.coins);
   }
+  if (e.key === STORAGE.hints) {
+    persist.hints = parseInt(e.newValue || '0', 10) || 0;
+    if (hintCountEl) hintCountEl.textContent = String(persist.hints);
+  }
 });
+
+// Re-sync on bfcache restore / tab visibility change. The `storage` event
+// doesn't fire for pages restored from the back-forward cache, which means
+// navigating back from flashcards.html could otherwise leave a stale balance.
+function resyncSharedFromStorage() {
+  try {
+    const rawCoins = localStorage.getItem(STORAGE.coins);
+    const newCoins = parseInt(rawCoins || '0', 10) || 0;
+    if (newCoins !== persist.coins) {
+      persist.coins = newCoins;
+      if (coinCountEl) coinCountEl.textContent = String(persist.coins);
+    }
+    const rawHints = localStorage.getItem(STORAGE.hints);
+    const newHints = rawHints === null ? persist.hints : (parseInt(rawHints, 10) || 0);
+    if (newHints !== persist.hints) {
+      persist.hints = newHints;
+      if (hintCountEl) hintCountEl.textContent = String(persist.hints);
+    }
+  } catch {}
+}
+window.addEventListener('pageshow', resyncSharedFromStorage);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') resyncSharedFromStorage();
+});
+
+// One-time migration: earlier flashcards builds stored coins inside the old
+// combined `arabicFlashcards_v1` key. Pull them across if no new value exists
+// so the user doesn't appear to have "lost" their coins.
+(function migrateLegacyCoins() {
+  try {
+    if (localStorage.getItem(STORAGE.coins) !== null) return;
+    const oldRaw = localStorage.getItem('arabicFlashcards_v1');
+    if (!oldRaw) return;
+    const old = JSON.parse(oldRaw);
+    if (old && typeof old.coins === 'number' && old.coins > 0) {
+      localStorage.setItem(STORAGE.coins, String(old.coins));
+    }
+  } catch {}
+})();
 
 /* ============ App state ============ */
 const state = {
-  // menu | gameSelect | gameIntro | playing | blockIntro | blockPlaying | shop | gameover
+  // menu | gameSelect | gameIntro | playing | blockIntro | blockPlaying
+  // | shop | gameover | textsSelect | textReading
   screen: 'menu',
   gameResult: null,
   shopFromGame: false,
   showRules: false,
   showBlockRules: false,
+  textFilter: 'all', // 'all' | 'easy' | 'medium' | 'hard'
+  currentTextId: null,
+  textChecked: false,
+  shopReturnTo: null, // e.g. 'textReading' when shop was opened to buy hints
 };
 
 /* ============ DOM helpers ============ */
@@ -1085,19 +1610,45 @@ function playPop() {
   } catch {}
 }
 
-/* ============ Coin badge ============ */
+/* ============ Coin + hint badges ============ */
 const coinBadgeContainer = document.getElementById('coin-badge-container');
 let coinCountEl = null;
+let hintCountEl = null;
+let hintBadgeEl = null;
 
 function renderCoinBadge() {
   coinBadgeContainer.innerHTML = '';
-  const badge = el('div', { class: 'coin-badge' },
+  const coinBadge = el('div', { class: 'coin-badge' },
     el('div', { class: 'coin-icon' }, '$'),
     el('span', { class: 'coin-count' }, String(persist.coins))
   );
-  coinBadgeContainer.appendChild(badge);
-  coinCountEl = badge.querySelector('.coin-count');
+  coinBadgeContainer.appendChild(coinBadge);
+  coinCountEl = coinBadge.querySelector('.coin-count');
+
+  // Hint badge: image with graceful fallback to a CSS-drawn lamp when
+  // images/lamp.png isn't uploaded yet (PLACEHOLDER).
+  const lampImg = el('img', {
+    class: 'hint-lamp-icon',
+    src: 'images/lamp.png',
+    alt: '',
+  });
+  const lampFallback = el('div', { class: 'hint-lamp-placeholder' }, '💡');
+  lampFallback.style.display = 'none';
+  lampImg.addEventListener('error', () => {
+    lampImg.style.display = 'none';
+    lampFallback.style.display = 'flex';
+  });
+
+  hintBadgeEl = el('div', { class: 'hint-badge' },
+    lampImg,
+    lampFallback,
+    el('span', { class: 'hint-count' }, String(persist.hints))
+  );
+  hintBadgeEl.style.display = 'none';
+  coinBadgeContainer.appendChild(hintBadgeEl);
+  hintCountEl = hintBadgeEl.querySelector('.hint-count');
 }
+
 function updateCoins(newVal, animate = false) {
   persist.coins = Math.max(0, newVal | 0);
   savePersist();
@@ -1110,6 +1661,27 @@ function updateCoins(newVal, animate = false) {
       setTimeout(() => coinCountEl && coinCountEl.classList.remove('coin-pop'), 500);
     }
   }
+}
+
+function updateHints(newVal, animate = false) {
+  persist.hints = Math.max(0, newVal | 0);
+  savePersist();
+  if (hintCountEl) {
+    hintCountEl.textContent = String(persist.hints);
+    if (animate) {
+      hintCountEl.classList.remove('coin-pop');
+      void hintCountEl.offsetWidth;
+      hintCountEl.classList.add('coin-pop');
+      setTimeout(() => hintCountEl && hintCountEl.classList.remove('coin-pop'), 500);
+    }
+  }
+}
+
+function updateHintBadgeVisibility() {
+  if (!hintBadgeEl) return;
+  const show = state.screen === 'textsSelect' || state.screen === 'textReading';
+  hintBadgeEl.style.display = show ? 'flex' : 'none';
+  if (show && hintCountEl) hintCountEl.textContent = String(persist.hints);
 }
 
 /* ============ Question generation ============ */
@@ -1148,6 +1720,8 @@ function render() {
   screenEl.innerHTML = '';
   screenEl.style.padding = '80px 16px 32px';
   screenEl.className = '';
+  // Dismiss any lingering word tooltip between screens
+  document.querySelectorAll('.word-tooltip').forEach(t => t.remove());
   switch (state.screen) {
     case 'menu': renderMenu(); break;
     case 'gameSelect': renderGameSelect(); break;
@@ -1157,7 +1731,10 @@ function render() {
     case 'blockPlaying': renderBlockGame(); break;
     case 'shop': renderShop({ inGame: false }); break;
     case 'gameover': renderGameOver(); break;
+    case 'textsSelect': renderTextsSelect(); break;
+    case 'textReading': renderTextReading(); break;
   }
+  updateHintBadgeVisibility();
 }
 
 /* ============ Main menu ============ */
@@ -1179,7 +1756,10 @@ function renderMenu() {
         class: 'menu-btn',
         onclick: () => navigate('shop')
       }, 'חנות'),
-      el('button', { class: 'menu-btn disabled', disabled: true }, 'בקרוב...')
+      el('button', {
+        class: 'menu-btn',
+        onclick: () => navigate('textsSelect')
+      }, 'טקסטים')
     )
   );
   screenEl.appendChild(card);
@@ -1586,6 +2166,8 @@ function buildShopCard({ inGame, onBuy, onBack, backLabel }) {
   card.appendChild(header);
 
   const items = el('div', { class: 'shop-items' });
+
+  // Life packs — existing bubble-game bonus.
   [{ n: 1, cost: 50 }, { n: 3, cost: 150 }].forEach(({ n, cost }) => {
     const canAfford = persist.coins >= cost;
     const item = el('div', { class: 'shop-item' });
@@ -1611,6 +2193,46 @@ function buildShopCard({ inGame, onBuy, onBack, backLabel }) {
     item.appendChild(buyBtn);
     items.appendChild(item);
   });
+
+  // Hint packs — always purchasable, regardless of whether shop was opened
+  // mid-game. The buy action tops up persist.hints directly.
+  [{ n: 3, cost: 80 }, { n: 5, cost: 150 }].forEach(({ n, cost }) => {
+    const canAfford = persist.coins >= cost;
+    const item = el('div', { class: 'shop-item' });
+    // Lamp icons — PLACEHOLDER for images/lamp.png with CSS fallback
+    const lamps = el('div', { class: 'shop-lamps' });
+    for (let li = 0; li < n; li++) {
+      const img = el('img', { class: 'shop-lamp-img', src: 'images/lamp.png', alt: '' });
+      const fallback = el('div', { class: 'shop-lamp-placeholder' }, '💡');
+      fallback.style.display = 'none';
+      img.addEventListener('error', () => {
+        img.style.display = 'none';
+        fallback.style.display = 'flex';
+      });
+      const slot = document.createElement('span');
+      slot.style.display = 'inline-flex';
+      slot.appendChild(img);
+      slot.appendChild(fallback);
+      lamps.appendChild(slot);
+    }
+    item.appendChild(lamps);
+    item.appendChild(el('div', { class: 'shop-label' }, el('span', {}, 'בונוס רמזים ' + n)));
+    const buyBtn = el('button', {
+      class: 'shop-buy',
+      disabled: !canAfford,
+      onclick: () => {
+        if (persist.coins < cost) return;
+        updateCoins(persist.coins - cost, true);
+        updateHints(persist.hints + n, true);
+      }
+    },
+      el('span', { class: 'price-coin' }, '💰'),
+      ' ' + cost
+    );
+    item.appendChild(buyBtn);
+    items.appendChild(item);
+  });
+
   card.appendChild(items);
 
   if (inGame) {
@@ -1626,7 +2248,11 @@ function buildShopCard({ inGame, onBuy, onBack, backLabel }) {
 function renderShop({ inGame }) {
   const backBtn = el('button', {
     class: 'back-arrow',
-    onclick: () => navigate('menu'),
+    onclick: () => {
+      const target = state.shopReturnTo || 'menu';
+      state.shopReturnTo = null;
+      navigate(target);
+    },
     'aria-label': 'חזרה'
   }, '‹');
   screenEl.appendChild(backBtn);
@@ -2332,6 +2958,547 @@ function triggerBlockGameOver() {
 function restartBlockGame() {
   resetBlockGame();
   render();
+}
+
+/* ============ Texts feature ============ */
+const ARABIC_TEXTS = [
+  {
+    id: 'text1',
+    title: 'أَنَا وَبَيْتِي',
+    titleHeb: 'אני והבית שלי',
+    difficulty: 'easy',
+    tags: ['בית', 'משפחה'],
+    text: 'أَنَا إِسْمِي دَاوُد. أَنَا تِلْمِيذ فِي مَدْرَسَة فِي تَلْ أَبِيب. بَيْتِي كَبِير. فِي بَيْتِي ثَلَاث غُرَف. أَنَا سَاكِن مَعَ أُمِّي وَأَبِي وَإِبْنِي.',
+    questions: [
+      { type: 'open', question: 'أَيْن يَسْكُن دَاوُد؟', questionHeb: 'איפה גר דאוד?', answer: 'תל אביב' },
+      { type: 'multiple', question: 'כַּמָּה חדרים יש בבית של דאוד?', options: ['שניים', 'שלושה', 'ארבעה', 'חמישה'], correctIndex: 1 },
+      { type: 'open', question: 'מה דאוד? (תלמיד/מנהל/מורה)', answer: 'תלמיד' },
+      { type: 'open', question: 'מה השם של התלמיד?', answer: 'דאוד' },
+      { type: 'multiple', question: 'עם מי גר דאוד?', options: ['לבד', 'עם אמא, אבא ובן', 'רק עם אמא', 'עם חבר'], correctIndex: 1 },
+      { type: 'open', question: 'הבית של דאוד גדול או קטן?', answer: 'גדול' },
+    ],
+  },
+  {
+    id: 'text2',
+    title: 'فِي السُّوق',
+    titleHeb: 'בשוק',
+    difficulty: 'easy',
+    tags: ['שוק', 'אוכל'],
+    text: 'ذَهَبَ وَلَد إِلَى السُّوق مَعَ أُمِّهِ. فِي السُّوق تُوت وَزَيْتُون وَفَلَافِل. أَكَلَ الْوَلَد فَلَافِل. قَالَ: مُمْتَاز!',
+    questions: [
+      { type: 'multiple', question: 'עם מי הלך הילד לשוק?', options: ['עם אביו', 'עם אמו', 'עם חברו', 'לבד'], correctIndex: 1 },
+      { type: 'open', question: 'מה אכל הילד?', answer: 'פלאפל' },
+      { type: 'multiple', question: 'מה אמר הילד אחרי שאכל?', options: ['لَا', 'مُمْتَاز', 'سَلَام', 'نَعَم'], correctIndex: 1 },
+      { type: 'multiple', question: 'מה היה בשוק?', options: ['רק פלאפל', 'תותים, זיתים ופלאפל', 'רק אבוקדו', 'רק זיתים'], correctIndex: 1 },
+      { type: 'open', question: 'לאן הלך הילד?', answer: 'לשוק' },
+      { type: 'open', question: 'מה המשמעות של السُّوق?', answer: 'שוק' },
+    ],
+  },
+  {
+    id: 'text3',
+    title: 'مَدْرَسَتِي',
+    titleHeb: 'בית הספר שלי',
+    difficulty: 'medium',
+    tags: ['בית ספר', 'לימודים'],
+    text: 'أَنَا تِلْمِيذَة إِسْمِي نُور. أَنَا سَاكِنَة فِي يَافَا. مَدْرَسَتِي قَرِيبَة مِنْ بَيْتِي. فِي مَدْرَسَتِي مُدِير مُمْتَاز وَمُعَلِّم كَبِير. أَنَا أُحِبّ مَدْرَسَتِي. فِي دَفْتَرِي كَلِمَات كَثِيرَة بِالْعَرَبِيَّة.',
+    questions: [
+      { type: 'open', question: 'أَيْنَ سَاكِنَة نُور؟', questionHeb: 'איפה גרה נור?', answer: 'יפו' },
+      { type: 'multiple', question: 'האם בית הספר רחוק מהבית של נור?', options: ['כן, רחוק', 'לא, קרוב', 'לא כתוב', 'היא לומדת בבית'], correctIndex: 1 },
+      { type: 'open', question: 'מה יש במחברת של נור?', answer: 'מילים בערבית' },
+      { type: 'multiple', question: 'מי נור?', options: ['תלמיד', 'תלמידה', 'מורה', 'מנהלת'], correctIndex: 1 },
+      { type: 'open', question: 'מה שם התלמידה?', answer: 'נור' },
+      { type: 'multiple', question: 'איך המנהל של בית הספר?', options: ['קטן', 'רע', 'מצוין', 'לא טוב'], correctIndex: 2 },
+    ],
+  },
+  {
+    id: 'text4',
+    title: 'دَارُنَا الْجَدِيدَة',
+    titleHeb: 'הדירה החדשה שלנו',
+    difficulty: 'medium',
+    tags: ['בית', 'משפחה', 'עיר'],
+    text: 'قَبْلَ سَنَة سَكَنَّا فِي مَدِينَة كَبِيرَة. أَمْسِ ذَهَبْنَا إِلَى دَار جَدِيدَة فِي قَرْيَة قَرِيبَة. دَارُنَا الْجَدِيدَة فِيهَا أَرْبَع غُرَف. أَبِي قَالَ: هُنَا بَيْتُنَا! أُمِّي سَمِعَتْ وَقَالَتْ: مُمْتَاز! أَنَا وَأَهْلِي سَاكِنِين هُنَا.',
+    questions: [
+      { type: 'open', question: 'איפה גרה המשפחה לפני שנה?', answer: 'בעיר גדולה' },
+      { type: 'multiple', question: 'כמה חדרים יש בדירה החדשה?', options: ['שלושה', 'ארבעה', 'חמישה', 'שישה'], correctIndex: 1 },
+      { type: 'open', question: 'הדירה החדשה בעיר או בכפר?', answer: 'בכפר' },
+      { type: 'multiple', question: 'מה אמר האבא?', options: ['مُمْتَاز', 'هُنَا بَيْتُنَا', 'سَلَام', 'لَا'], correctIndex: 1 },
+      { type: 'multiple', question: 'מתי עברו לדירה החדשה?', options: ['לפני שנה', 'אתמול', 'היום', 'לפני שבוע'], correctIndex: 1 },
+      { type: 'open', question: 'מה אמרה אמא?', answer: 'מצוין' },
+    ],
+  },
+  {
+    id: 'text5',
+    title: 'رَفِيقِي عُمَر',
+    titleHeb: 'החבר שלי עמר',
+    difficulty: 'hard',
+    tags: ['חברים', 'בית ספר', 'ערים'],
+    text: 'إِسْمِي عَلِي وَرَفِيقِي إِسْمُهُ عُمَر. عُمَر تِلْمِيذ مُمْتَاز فِي مَدْرَسَتِنَا. هُوَ سَاكِن فِي إِيلَات وَأَنَا سَاكِن فِي أَشْدُود. كُلّ يَوْم عُمَر ذَهَبَ إِلَى الْمَدْرَسَة وَدَرَسَ وَكَتَبَ فِي دَفْتَرِهِ كَلِمَات كَثِيرَة. أَمْسِ عَمِلَ عُمَر تَمْرِين فِي كِتَابِهِ وَقَرَأَ قِصَّة عَنْ مَلِك وَمَمْلَكَة. الْمُعَلِّم قَالَ لِعُمَر: أَنْتَ تِلْمِيذ مُمْتَاز! رَئِيس الْمَدْرَسَة سَمِعَ وَقَالَ: نَعَم!',
+    questions: [
+      { type: 'open', question: 'أَيْنَ يَسْكُن عُمَر؟', questionHeb: 'איפה גר עמר?', answer: 'אילת' },
+      { type: 'open', question: 'מה עשה עמר אתמול?', answer: 'תרגיל בספר וקרא סיפור' },
+      { type: 'multiple', question: 'על מה הסיפור שעמר קרא?', options: ['על חבר', 'על בית ספר', 'על מלך וממלכה', 'על עיר'], correctIndex: 2 },
+      { type: 'multiple', question: 'מי אמר \'אתה תלמיד מצוין\'?', options: ['הרפיק', 'האבא', 'המורה', 'המנהל'], correctIndex: 2 },
+      { type: 'open', question: 'איפה גר עלי?', answer: 'אשדוד' },
+      { type: 'open', question: 'מה כתב עמר במחברת?', answer: 'מילים' },
+    ],
+  },
+];
+
+/* ============ Hint dictionary — vocabulary lookup for the texts ============ */
+// Covers flashcards vocabulary (203 entries) so conjugated forms like
+// إِسْمِي / بَيْتِي are recognized — plus the shorter WORDS / BLOCK_WORDS sets.
+const FLASHCARDS_VOCAB = [
+  {ar:"دَار",heb:"דירה, בית"},{ar:"أَرْنَب",heb:"ארנב"},{ar:"أَنْتَ",heb:"אתה"},
+  {ar:"زَارَ",heb:"ביקר...ב"},{ar:"أُذُن",heb:"אוזן"},{ar:"أَنْتِ",heb:"את"},
+  {ar:"وَ",heb:"ו (ו' החיבור)"},{ar:"نُور",heb:"אור / נור"},{ar:"بِنْت",heb:"בת, ילדה"},
+  {ar:"وَرْد",heb:"ורדים"},{ar:"أَنَا",heb:"אני"},{ar:"بَنَات",heb:"בנות, ילדות"},
+  {ar:"دَاوُد",heb:"דאוד (שם פרטי)"},{ar:"إِبْن",heb:"בן"},{ar:"بَيْت",heb:"בית"},
+  {ar:"دُودُو",heb:"דודו (שם פרטי)"},{ar:"بُيُوت",heb:"בתים"},{ar:"رَاز",heb:"ראז (שם פרטי)"},
+  {ar:"يَد",heb:"יד"},{ar:"وِدَاد",heb:"ודאד (שם פרטי)"},{ar:"إِيرَان",heb:"איראן"},
+  {ar:"زَارَتْ",heb:"ביקרה...ב"},{ar:"نُورِي",heb:"נורי (שם פרטי)"},{ar:"دَارِي",heb:"דירתי, ביתי"},
+  {ar:"زِيَاد",heb:"זיאד (שם פרטי)"},{ar:"بَيْتِي",heb:"ביתי (בית שלי)"},{ar:"أ",heb:"האם?"},
+  {ar:"أَيْن",heb:"איפה? היכן?"},{ar:"بِنْتِي",heb:"בתי (בת שלי)"},{ar:"أَوْ",heb:"או"},
+  {ar:"وَزِير",heb:"שר (בממשלה)"},{ar:"إِبْنِي",heb:"בני (בן שלי)"},{ar:"دُرُوز",heb:"דרוזים"},
+  {ar:"دُرْزِيّ",heb:"דרוזי"},{ar:"يَدِي",heb:"ידי (יד שלי)"},{ar:"دُبّ",heb:"דב"},
+  {ar:"بَدَوِيّ",heb:"בדואי"},{ar:"ثَوْر",heb:"שור"},{ar:"أَب",heb:"אב, אבא"},
+  {ar:"بَيْرُوت",heb:"ביירות"},{ar:"ثَوْب",heb:"בגד"},{ar:"بِ",heb:"ב... באמצעות"},
+  {ar:"تُوت",heb:"תותים"},{ar:"ثِيَاب",heb:"בגדים"},{ar:"بَاب",heb:"דלת, שער"},
+  {ar:"زَيْتُون",heb:"זיתים"},{ar:"أَثَاث",heb:"ריהוט, רהיטים"},{ar:"بِدَار",heb:"בדירה, בבית"},
+  {ar:"هُوَ",heb:"הוא"},{ar:"بَدَوِيَّة",heb:"בדואית"},{ar:"أُمَّهَات",heb:"אמהות"},
+  {ar:"هِيَ",heb:"היא"},{ar:"يَهُودِيَّة",heb:"יהודיה"},{ar:"نَمِر",heb:"נמר"},
+  {ar:"يَهُودِيّ",heb:"יהודי"},{ar:"أُمّ",heb:"אם, אמא"},{ar:"وَلَد",heb:"ילד"},
+  {ar:"يَهُود",heb:"יהודים"},{ar:"مُدِير",heb:"מנהל"},{ar:"أَوْلَاد",heb:"ילדים"},
+  {ar:"هُنَا",heb:"כאן, פה"},{ar:"مُمْتَاز",heb:"מצוין"},{ar:"تِلْمِيذ",heb:"תלמיד"},
+  {ar:"ذَهَب",heb:"הלך"},{ar:"مَدِينَة",heb:"עיר"},{ar:"تَلَامِيذ",heb:"תלמידים"},
+  {ar:"هَذَا",heb:"זה, הזה"},{ar:"تَمْرِين",heb:"תרגיל"},{ar:"أَهْل",heb:"משפחה, אנשי..."},
+  {ar:"هَذِهِ",heb:"זאת, הזאת"},{ar:"إِبْرَاهِيم",heb:"אברהים (שם פרטי)"},{ar:"لَا",heb:"לא (מילת שלילה)"},
+  {ar:"دَارُهُ",heb:"דירתו, ביתו"},{ar:"مُنِير",heb:"מניר (שם פרטי)"},{ar:"لِ",heb:"ל..."},
+  {ar:"دَارُهَا",heb:"דירתה, ביתה"},{ar:"أَنْتُم",heb:"אתם"},{ar:"لُبْنَان",heb:"לבנון"},
+  {ar:"بَيْتُهُ",heb:"ביתו"},{ar:"أَنْتُنَّ",heb:"אתן"},{ar:"لَنْدَن",heb:"לונדון"},
+  {ar:"بَيْتَهَا",heb:"ביתה"},{ar:"هُمْ",heb:"הם"},{ar:"إِيلَات",heb:"אילת"},
+  {ar:"هُنَّ",heb:"הן"},{ar:"تَلْ أَبِيب",heb:"תל אביב"},{ar:"مِنْ",heb:"מ... מן"},
+  {ar:"نَمْلَة",heb:"נמלה"},{ar:"وَزِيرَة",heb:"שרה (בממשלה)"},{ar:"مِنْ أَيْن",heb:"מאיפה?"},
+  {ar:"ثَلَاث",heb:"שלוש"},{ar:"دُرْزِيَّة",heb:"דרוזית"},{ar:"مَنْ",heb:"מי?"},
+  {ar:"أَمَل",heb:"אמל / תקווה"},{ar:"تِلْمِيذَة",heb:"תלמידה"},{ar:"كَلْب",heb:"כלב"},
+  {ar:"دَارُكِ",heb:"דירתך (לנקבה)"},{ar:"لِي",heb:"יש לי"},{ar:"أَبُو كَادُو",heb:"אבוקדו"},
+  {ar:"كَلْبُكِ",heb:"כלבך (לנקבה)"},{ar:"إِلَى",heb:"אל... ל..."},{ar:"كَلِمَات",heb:"מילים"},
+  {ar:"يَدُكِ",heb:"ידך (לנקבה)"},{ar:"إِلَى أَيْن",heb:"לאן?"},{ar:"كَلِمَة",heb:"מילה"},
+  {ar:"كِتَابُكِ",heb:"ספרך (לנקבה)"},{ar:"هَلْ",heb:"האם?"},{ar:"كِيوِي",heb:"קיווי"},
+  {ar:"مُدِيرُكِ",heb:"מנהלך (לנקבה)"},{ar:"اَلْوَلَد",heb:"הילד"},{ar:"أَمْرِيكَا",heb:"אמריקה"},
+  {ar:"يَوْم",heb:"יום"},{ar:"اَلْوَزِير",heb:"השר"},{ar:"تُرْكِيَا",heb:"תורכיה"},
+  {ar:"أَيَّام",heb:"ימים"},{ar:"اَلْيَد",heb:"היד"},{ar:"كَنَدَا",heb:"קנדה"},
+  {ar:"مَلِك",heb:"מלך"},{ar:"اَلْيَهُودِيّ",heb:"היהודי"},{ar:"نِيُو يُورْك",heb:"ניו יורק"},
+  {ar:"مَمْلَكَة",heb:"ממלכה"},{ar:"كِتَاب",heb:"ספר"},{ar:"اَلْكُوَيْت",heb:"כוויט"},
+  {ar:"اَلْأُرْدُنّ",heb:"ירדן"},{ar:"كُتُب",heb:"ספרים"},{ar:"بَنْك",heb:"בנק"},
+  {ar:"فِي",heb:"ב..., בתוך"},{ar:"أَكَلَ",heb:"אכל"},{ar:"دَارُكَ",heb:"דירתך (לזכר)"},
+  {ar:"دَفْتَر",heb:"מחברת"},{ar:"كَتَبَ",heb:"כתב"},{ar:"كَلْبُكَ",heb:"כלבך (לזכר)"},
+  {ar:"فِيل",heb:"פיל"},{ar:"دُكَّان",heb:"חנות, דוכן"},{ar:"يَدُكَ",heb:"ידך (לזכר)"},
+  {ar:"زُرَافَة",heb:"ג'ירפה"},{ar:"كَبِير",heb:"גדול"},{ar:"كِتَابُكَ",heb:"ספרך (לזכר)"},
+  {ar:"فُلْفُل",heb:"פילפל"},{ar:"هُنَاكَ",heb:"שם (ההפך מכאן)"},{ar:"مُدِيرُكَ",heb:"מנהלך (לזכר)"},
+  {ar:"فُول",heb:"פול"},{ar:"فَلَافِل",heb:"פלאפל"},{ar:"لَبِسَ",heb:"לבש"},
+  {ar:"شَرِبَ",heb:"שתה"},{ar:"رَفِيق",heb:"חבר"},{ar:"مُسْلِم",heb:"מוסלמי"},
+  {ar:"مِشْمِش",heb:"משמשים"},{ar:"يَافَا",heb:"יפו"},{ar:"رَأْس",heb:"ראש"},
+  {ar:"أَشْدُود",heb:"אשדוד"},{ar:"قَرِيب",heb:"קרוב"},{ar:"أَمْسِ",heb:"אתמול, אמש"},
+  {ar:"أُورُشْلِيم الْقُدْس",heb:"ירושלים"},{ar:"قَرْيَة",heb:"כפר"},{ar:"سَلَام",heb:"שלום"},
+  {ar:"عَرَبِيّ",heb:"ערבי"},{ar:"قَرَأَ",heb:"קרא"},{ar:"سِنّ",heb:"שן"},
+  {ar:"عَرَبِيَّة",heb:"ערביה"},{ar:"قَالَ",heb:"אמר"},{ar:"أَسْنَان",heb:"שיניים"},
+  {ar:"عَرَب",heb:"ערבים"},{ar:"قَدِيم",heb:"קדום, עתיק"},{ar:"سَنَة",heb:"שנה"},
+  {ar:"مُعَلِّم",heb:"מורה"},{ar:"قَهْوَة",heb:"קפה"},{ar:"إِسْرَائِيل",heb:"ישראל"},
+  {ar:"نَعَم",heb:"כן (מילת חיוב)"},{ar:"قَبْلَ",heb:"לפני"},{ar:"رَئِيس",heb:"ראש, נשיא"},
+  {ar:"عَمِلَ",heb:"עבד, עשה"},{ar:"إِسْم",heb:"שם"},{ar:"سَفِينَة",heb:"ספינה"},
+  {ar:"سَمِعَ",heb:"שמע"},{ar:"مَدْرَسَة",heb:"בית ספר"},{ar:"سُوق",heb:"שוק"},
+  {ar:"عِنْزَة",heb:"עז"},{ar:"دَرَسَ",heb:"למד"},{ar:"مِسْكِين",heb:"מסכן"},
+  {ar:"عَلِي",heb:"עלי (שם פרטי)"},{ar:"سَاكِن",heb:"גר (בהווה)"},{ar:"إِسْمِي",heb:"שמי (השם שלי)"},
+  {ar:"عُثْمَان",heb:"עת'מאן (שם פרטי)"},{ar:"سَاكِنَة",heb:"גרה (בהווה)"},{ar:"إِسْمُهُ",heb:"שמו (השם שלו)"},
+  {ar:"عُمَر",heb:"עמר (שם פרטי)"},{ar:"سَكَنَ",heb:"גר (בעבר)"},{ar:"إِسْمُهَا",heb:"שמה (השם שלה)"},
+  {ar:"عَبَّاس",heb:"עבאס (שם פרטי)"},{ar:"عَكَّا",heb:"עכו"},{ar:"اَلْعِرَاق",heb:"עיראק"},
+  {ar:"عَمَّان",heb:"עמאן"},{ar:"مَعَ",heb:"עם"},{ar:"لُغَة",heb:"שפה"},
+  {ar:"غُرْفَة",heb:"חדר"},{ar:"غُرَف",heb:"חדרים"},{ar:"أُغْنِيَة",heb:"שיר"},
+  {ar:"غَزَّة",heb:"עזה"},{ar:"بَغْدَاد",heb:"בגדד"},{ar:"غُورِيلَا",heb:"גורילה"},
+  // Extra forms seen in the texts that aren't explicit entries elsewhere:
+  {ar:"أُمِّي",heb:"אמא שלי"},{ar:"أَبِي",heb:"אבא שלי"},{ar:"أُمِّهِ",heb:"אמא שלו"},
+  {ar:"مَدْرَسَتِي",heb:"בית הספר שלי"},{ar:"مَدْرَسَتِنَا",heb:"בית הספר שלנו"},
+  {ar:"دَفْتَرِي",heb:"המחברת שלי"},{ar:"دَفْتَرِهِ",heb:"המחברת שלו"},
+  {ar:"كِتَابِهِ",heb:"הספר שלו"},{ar:"رَفِيقِي",heb:"החבר שלי"},
+  {ar:"قَرِيبَة",heb:"קרובה"},{ar:"كَبِيرَة",heb:"גדולה"},{ar:"جَدِيدَة",heb:"חדשה"},
+  {ar:"ذَهَبْنَا",heb:"הלכנו"},{ar:"سَكَنَّا",heb:"גרנו"},{ar:"سَمِعَتْ",heb:"שמעה"},
+  {ar:"قَالَتْ",heb:"אמרה"},{ar:"سَاكِنِين",heb:"גרים"},{ar:"دَارُنَا",heb:"הדירה שלנו"},
+  {ar:"بَيْتُنَا",heb:"הבית שלנו"},{ar:"أَهْلِي",heb:"המשפחה שלי"},
+  {ar:"ثَلَاث",heb:"שלוש"},{ar:"أَرْبَع",heb:"ארבע"},{ar:"كَثِيرَة",heb:"רבות"},
+  {ar:"بِالْعَرَبِيَّة",heb:"בערבית"},{ar:"كُلّ",heb:"כל"},{ar:"فِيهَا",heb:"יש בה"},
+  {ar:"ذَهَبَ",heb:"הלך"},{ar:"السُّوق",heb:"השוק"},{ar:"الْوَلَد",heb:"הילד"},
+  {ar:"الْمَدْرَسَة",heb:"בית הספר"},{ar:"الْمُعَلِّم",heb:"המורה"},
+  {ar:"قِصَّة",heb:"סיפור"},{ar:"عَنْ",heb:"על (אודות)"},{ar:"لِعُمَر",heb:"לעמר"},
+  {ar:"أُحِبّ",heb:"אוהב/אוהבת"},
+];
+
+function normalizeArabic(s) {
+  return String(s || '')
+    // Strip diacritics, tatweel, and Quranic marks
+    .replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\u0640]/g, '')
+    // Strip punctuation (Latin + Arabic)
+    .replace(/[.,!?؟،؛:"'׳״()\[\]{}«»]/g, '')
+    .trim();
+}
+
+const HINT_MAP = (() => {
+  const m = new Map();
+  const add = (ar, heb) => {
+    if (!ar) return;
+    const n = normalizeArabic(ar);
+    if (n && !m.has(n)) m.set(n, heb);
+  };
+  FLASHCARDS_VOCAB.forEach(e => add(e.ar, e.heb));
+  WORDS.forEach(e => add(e.ar, e.heb));
+  BLOCK_WORDS.forEach(e => add(e.ar, e.heb));
+  return m;
+})();
+
+function lookupWord(arabicWord) {
+  const n = normalizeArabic(arabicWord);
+  if (!n) return null;
+  if (HINT_MAP.has(n)) return HINT_MAP.get(n);
+  // Try stripping a common one-letter prefix (و، ف، ب، ل) + optional "ال"
+  const prefixMatch = n.match(/^([وفبل])(ال)?(.+)$/);
+  if (prefixMatch) {
+    const inner = (prefixMatch[2] ? 'ال' : '') + prefixMatch[3];
+    if (HINT_MAP.has(inner)) return HINT_MAP.get(inner);
+    if (HINT_MAP.has(prefixMatch[3])) return HINT_MAP.get(prefixMatch[3]);
+  }
+  // Try stripping leading "ال" (the definite article)
+  if (n.startsWith('ال') && n.length > 2) {
+    const stripped = n.slice(2);
+    if (HINT_MAP.has(stripped)) return HINT_MAP.get(stripped);
+  }
+  return null;
+}
+
+function tokenizeArabic(text) {
+  // Word chars = Arabic Unicode blocks (incl. diacritics). Everything else
+  // (spaces, ., ,, ?, etc.) stays as a literal separator text node.
+  const tokens = [];
+  const re = /([\u0600-\u06FF\u0750-\u077F]+)|([^\u0600-\u06FF\u0750-\u077F]+)/g;
+  let match;
+  while ((match = re.exec(text)) !== null) {
+    if (match[1]) tokens.push({ type: 'word', text: match[1] });
+    else tokens.push({ type: 'sep', text: match[2] });
+  }
+  return tokens;
+}
+
+function showWordTooltip(wordEl, text, miss = false) {
+  // Remove any existing tooltip + active highlight
+  document.querySelectorAll('.word-tooltip').forEach(t => t.remove());
+  document.querySelectorAll('.arabic-word.active').forEach(el => el.classList.remove('active'));
+
+  wordEl.classList.add('active');
+  const tooltip = document.createElement('div');
+  tooltip.className = 'word-tooltip' + (miss ? ' miss' : '');
+  tooltip.textContent = text;
+  document.body.appendChild(tooltip);
+
+  const rect = wordEl.getBoundingClientRect();
+  const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+  const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+  const tipW = tooltip.offsetWidth;
+  let left = rect.left + scrollX + rect.width / 2 - tipW / 2;
+  const margin = 8;
+  left = Math.max(margin, Math.min(left, window.innerWidth + scrollX - tipW - margin));
+  const top = rect.bottom + scrollY + 10;
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = top + 'px';
+
+  let autoRemove = setTimeout(cleanup, 4000);
+  function cleanup() {
+    clearTimeout(autoRemove);
+    tooltip.remove();
+    wordEl.classList.remove('active');
+    document.removeEventListener('click', onOutside, true);
+  }
+  function onOutside(e) {
+    if (e.target !== wordEl) cleanup();
+  }
+  // Delay so the click that opened this tooltip doesn't immediately close it
+  setTimeout(() => document.addEventListener('click', onOutside, true), 0);
+}
+
+function onArabicWordClick(wordEl, wordText) {
+  // No hints left → go to the shop so user can buy more,
+  // then bring them back to the reading screen they came from.
+  if (persist.hints <= 0) {
+    state.shopReturnTo = 'textReading';
+    navigate('shop');
+    return;
+  }
+  const meaning = lookupWord(wordText);
+  if (!meaning) {
+    // Don't spend a hint on words we can't translate
+    showWordTooltip(wordEl, 'המילה לא במילון', true);
+    return;
+  }
+  updateHints(persist.hints - 1, true);
+  showWordTooltip(wordEl, meaning);
+}
+
+const DIFFICULTY_LABEL = { easy: 'קל', medium: 'בינוני', hard: 'קשה' };
+
+function cleanAnswer(s) {
+  return String(s || '').trim().toLowerCase().replace(/[.,،!?؟"'׳״־]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function matchesOpenAnswer(userInput, correct) {
+  const u = cleanAnswer(userInput);
+  if (!u) return false;
+  const parts = String(correct).split(/[,،]/).map(cleanAnswer).filter(Boolean);
+  // Accept if the user's input equals any whole part, or if any comma-separated
+  // part of the correct answer appears as a whole token inside the user's input.
+  return parts.some(p => u === p || (' ' + u + ' ').includes(' ' + p + ' '));
+}
+
+/* ============ Texts — select screen ============ */
+function renderTextsSelect() {
+  const backBtn = el('button', {
+    class: 'back-arrow',
+    onclick: () => navigate('menu'),
+    'aria-label': 'חזרה',
+  }, '‹');
+  screenEl.appendChild(backBtn);
+
+  const wrap = el('div', {
+    style: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' },
+  });
+
+  wrap.appendChild(el('h1', { class: 'texts-title' }, 'טקסטים'));
+
+  const filterRow = el('div', { class: 'texts-filter-row' });
+  [
+    { key: 'all', label: 'הכל' },
+    { key: 'easy', label: 'קל' },
+    { key: 'medium', label: 'בינוני' },
+    { key: 'hard', label: 'קשה' },
+  ].forEach(({ key, label }) => {
+    filterRow.appendChild(el('button', {
+      class: 'texts-filter-btn' + (state.textFilter === key ? ' active' : ''),
+      onclick: () => { state.textFilter = key; render(); },
+    }, label));
+  });
+  wrap.appendChild(filterRow);
+
+  const grid = el('div', { class: 'texts-grid' });
+  const shown = state.textFilter === 'all'
+    ? ARABIC_TEXTS
+    : ARABIC_TEXTS.filter(t => t.difficulty === state.textFilter);
+
+  shown.forEach(t => {
+    const completed = persist.textsCompleted.includes(t.id);
+    const card = el('div', {
+      class: 'text-card' + (completed ? ' completed' : ''),
+      onclick: () => openText(t.id),
+      role: 'button',
+      tabindex: '0',
+    },
+      el('div', { class: 'text-card-header' }, el('span', {}, t.title)),
+      el('div', { class: 'text-card-body' }, t.titleHeb)
+    );
+    const tags = el('div', { class: 'text-card-tags' });
+    t.tags.slice(0, 2).forEach(tag => {
+      tags.appendChild(el('span', { class: 'text-card-tag' }, tag));
+    });
+    tags.appendChild(el('span', { class: 'text-card-tag difficulty' }, DIFFICULTY_LABEL[t.difficulty] || t.difficulty));
+    card.appendChild(tags);
+    grid.appendChild(card);
+  });
+
+  // "New +" placeholder card (always last)
+  const newCard = el('div', { class: 'text-card new-card', 'aria-disabled': 'true' },
+    el('div', { class: 'text-card-header' }, el('span', {}, ' ')),
+    el('div', { class: 'text-card-body' },
+      el('div', { class: 'text-card-new-plus' },
+        el('span', { class: 'big-plus' }, '+'),
+        el('span', {}, 'חדש')
+      )
+    ),
+    el('div', { class: 'text-card-tags' })
+  );
+  grid.appendChild(newCard);
+
+  wrap.appendChild(grid);
+  screenEl.appendChild(wrap);
+}
+
+function openText(id) {
+  state.currentTextId = id;
+  state.textChecked = false;
+  navigate('textReading');
+}
+
+/* ============ Texts — reading screen ============ */
+function renderTextReading() {
+  const t = ARABIC_TEXTS.find(x => x.id === state.currentTextId);
+  if (!t) { navigate('textsSelect'); return; }
+
+  screenEl.style.padding = '70px 16px 32px';
+
+  const wrap = el('div', { class: 'text-reading-wrap' });
+
+  // Top: text card
+  const textCard = el('div', { class: 'text-reading-card' });
+  const header = el('div', { class: 'text-reading-header' });
+  header.appendChild(el('button', {
+    class: 'text-reading-header-back',
+    onclick: () => { state.textChecked = false; navigate('textsSelect'); },
+    'aria-label': 'חזרה',
+  }, '‹'));
+  header.appendChild(el('div', { class: 'text-reading-header-title' }, t.title));
+  textCard.appendChild(header);
+  // Tokenize the Arabic text so every word is its own clickable span.
+  const body = el('div', { class: 'text-reading-body' });
+  tokenizeArabic(t.text).forEach(tok => {
+    if (tok.type === 'word') {
+      const span = el('span', {
+        class: 'arabic-word',
+        onclick: (e) => onArabicWordClick(e.currentTarget, tok.text),
+      }, tok.text);
+      body.appendChild(span);
+    } else {
+      body.appendChild(document.createTextNode(tok.text));
+    }
+  });
+  textCard.appendChild(body);
+  wrap.appendChild(textCard);
+
+  // Bottom: questions card
+  const qCard = el('div', { class: 'questions-card' });
+  qCard.appendChild(el('div', { class: 'questions-header' },
+    el('div', { class: 'questions-header-title' }, 'שאלות')
+  ));
+
+  const qBody = el('div', { class: 'questions-body' });
+
+  t.questions.forEach((q, qi) => {
+    const item = el('div', { class: 'question-item', 'data-qi': String(qi) });
+
+    const isArabicQ = /[\u0600-\u06FF]/.test(q.question);
+    const qTextEl = el('div', {
+      class: 'question-text' + (isArabicQ ? ' arabic' : ''),
+    }, q.question);
+    item.appendChild(qTextEl);
+    if (q.questionHeb) {
+      item.appendChild(el('div', { class: 'question-heb-hint' }, q.questionHeb));
+    }
+
+    if (q.type === 'open') {
+      const input = el('input', {
+        type: 'text',
+        class: 'question-open-input',
+        placeholder: 'שדה כתיבה',
+        'data-qi': String(qi),
+        'data-type': 'open',
+        dir: 'rtl',
+        autocomplete: 'off',
+        autocorrect: 'off',
+        spellcheck: 'false',
+      });
+      item.appendChild(input);
+      const correctAnsEl = el('div', {
+        class: 'question-correct-answer',
+        'data-qi': String(qi),
+        style: { display: 'none' },
+      });
+      item.appendChild(correctAnsEl);
+    } else if (q.type === 'multiple') {
+      const opts = el('div', { class: 'question-options' });
+      q.options.forEach((opt, oi) => {
+        const isArabicOpt = /[\u0600-\u06FF]/.test(opt);
+        const optEl = el('div', {
+          class: 'question-option',
+          'data-qi': String(qi),
+          'data-oi': String(oi),
+          'data-type': 'multiple',
+          style: isArabicOpt ? { fontFamily: "'Noto Naskh Arabic', serif" } : {},
+          onclick: (e) => handleOptionClick(e.currentTarget, qi, oi),
+        }, opt);
+        opts.appendChild(optEl);
+      });
+      item.appendChild(opts);
+    }
+
+    qBody.appendChild(item);
+  });
+
+  const checkBtn = el('button', {
+    class: 'check-btn',
+    onclick: () => checkTextAnswers(t),
+  }, 'בדיקה');
+  qBody.appendChild(checkBtn);
+
+  qCard.appendChild(qBody);
+  wrap.appendChild(qCard);
+  screenEl.appendChild(wrap);
+}
+
+function handleOptionClick(optEl, qi, oi) {
+  if (optEl.classList.contains('disabled')) return;
+  // Deselect siblings
+  const siblings = screenEl.querySelectorAll(`.question-option[data-qi="${qi}"]`);
+  siblings.forEach(s => s.classList.remove('selected'));
+  optEl.classList.add('selected');
+}
+
+function checkTextAnswers(t) {
+  let correctCount = 0;
+  t.questions.forEach((q, qi) => {
+    if (q.type === 'open') {
+      const input = screenEl.querySelector(`input.question-open-input[data-qi="${qi}"]`);
+      if (!input) return;
+      const ok = matchesOpenAnswer(input.value, q.answer);
+      input.classList.add(ok ? 'correct' : 'wrong');
+      input.disabled = true;
+      if (ok) correctCount += 1;
+      if (!ok) {
+        const ansEl = screenEl.querySelector(`.question-correct-answer[data-qi="${qi}"]`);
+        if (ansEl) {
+          ansEl.textContent = 'התשובה: ' + q.answer;
+          ansEl.style.display = '';
+        }
+      }
+    } else if (q.type === 'multiple') {
+      const opts = screenEl.querySelectorAll(`.question-option[data-qi="${qi}"]`);
+      let selectedIdx = -1;
+      opts.forEach((o, oi) => {
+        if (o.classList.contains('selected')) selectedIdx = oi;
+        o.classList.add('disabled');
+      });
+      const ok = selectedIdx === q.correctIndex;
+      if (ok) correctCount += 1;
+      opts.forEach((o, oi) => {
+        o.classList.remove('selected');
+        if (oi === q.correctIndex) {
+          if (ok) o.classList.add('correct');
+          else o.classList.add('reveal-correct');
+        } else if (oi === selectedIdx) {
+          o.classList.add('wrong');
+        }
+      });
+    }
+  });
+
+  // Disable the check button
+  const btn = screenEl.querySelector('.check-btn');
+  if (btn) btn.disabled = true;
+
+  // Award coins
+  if (correctCount > 0) {
+    updateCoins(persist.coins + correctCount, true);
+  }
+
+  // Mark completed (first time)
+  if (!persist.textsCompleted.includes(t.id)) {
+    persist.textsCompleted = persist.textsCompleted.concat([t.id]);
+    savePersist();
+  }
+
+  state.textChecked = true;
 }
 
 /* ============ Boot ============ */
